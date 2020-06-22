@@ -12,8 +12,13 @@ Require-Bundle: org.eclipse.core.commands;bundle-version="3.9.0",
  org.eclipse.jface,
  org.eclipse.emf.ecore,
  org.eclipse.equinox.registry,
- hu.bme.mit.gamma.plugintemplate.transformation,
+ hu.bme.mit.gamma.c.transformation,
  hu.bme.mit.gamma.statechart.model,
- hu.bme.mit.gamma.statechart.language.ui
+ hu.bme.mit.gamma.statechart.language.ui,
+ hu.bme.mit.gamma.lowlevel.xsts.transformation;bundle-version="2.3.1",
+ hu.bme.mit.gamma.lowlevel.xsts.transformation.traceability;bundle-version="2.3.1",
+ hu.bme.mit.gamma.statechart.lowlevel.model;bundle-version="2.3.1",
+ hu.bme.mit.gamma.statechart.lowlevel.transformation;bundle-version="2.3.1",
+ hu.bme.mit.gamma.xsts.model;bundle-version="2.3.1"
 Automatic-Module-Name: hu.bme.mit.gamma.plugintemplate
 Import-Package: com.google.inject

@@ -1,4 +1,4 @@
-package hu.bme.mit.gamma.plugintemplate.transformation.patterns
+package hu.bme.mit.gamma.c.transformation.patterns
 
 import "http://www.mit.bme.hu/gamma/statechart/Model"
 import "http://www.mit.bme.hu/gamma/plugintemplate/transformation/Traceability"

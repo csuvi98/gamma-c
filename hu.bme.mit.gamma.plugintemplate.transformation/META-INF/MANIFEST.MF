@@ -1,11 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Plugin Template Example Statechart Transformation
-Bundle-SymbolicName: hu.bme.mit.gamma.plugintemplate.transformation;singleton:=true
+Bundle-SymbolicName: hu.bme.mit.gamma.c.transformation;singleton:=true
 Bundle-Version: 2.3.1.qualifier
 Bundle-Vendor: BME-FTSRG
-Export-Package: hu.bme.mit.gamma.plugintemplate.transformation,
- hu.bme.mit.gamma.plugintemplate.transformation.patterns
+Export-Package: hu.bme.mit.gamma.c.transformation,
+ hu.bme.mit.gamma.c.transformation.patterns,
+ hu.bme.mit.gamma.plugintemplate.transformation,
+ hu.bme.mit.gamma.c.transformation.patterns
 Require-Bundle: hu.bme.mit.gamma.statechart.model,
  org.eclipse.viatra.transformation.runtime.emf,
  org.eclipse.viatra.transformation.evm,
@@ -14,7 +16,11 @@ Require-Bundle: hu.bme.mit.gamma.statechart.model,
  org.eclipse.viatra.query.runtime.rete,
  org.eclipse.viatra.query.runtime.localsearch,
  org.eclipse.xtext.xbase.lib,
- hu.bme.mit.gamma.plugintemplate.transformation.traceability
+ hu.bme.mit.gamma.c.transformation.traceability,
+ hu.bme.mit.gamma.lowlevel.xsts.transformation;bundle-version="2.3.1",
+ hu.bme.mit.gamma.statechart.lowlevel.model;bundle-version="2.3.1",
+ hu.bme.mit.gamma.statechart.lowlevel.transformation;bundle-version="2.3.1",
+ hu.bme.mit.gamma.xsts.model;bundle-version="2.3.1"
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Automatic-Module-Name: hu.bme.mit.gamma.plugintemplate.transformation
 Import-Package: org.apache.log4j
