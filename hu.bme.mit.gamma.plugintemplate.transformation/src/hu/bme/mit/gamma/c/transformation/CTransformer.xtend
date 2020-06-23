@@ -2,6 +2,8 @@ package hu.bme.mit.gamma.c.transformation
 
 import hu.bme.mit.gamma.xsts.model.model.XSTS
 import org.eclipse.emf.ecore.resource.Resource
+import hu.bme.mit.gamma.expression.model.EnumerationTypeDefinition
+import hu.bme.mit.gamma.expression.model.TypeReference
 
 class CTransformer {
 	// Transformation-related extensions
@@ -9,6 +11,9 @@ class CTransformer {
 	final extension TypeDeclarationSerializer typeDeclarationSerializer = new TypeDeclarationSerializer
 	final extension VariableDiagnoser variableDiagnoser = new VariableDiagnoser
 	final extension TypeSerializer typeSerializer = new TypeSerializer
+	final extension InitialValueRetriever initialValueRetriever = new InitialValueRetriever
+	final extension ExpressionSerializer expressionSerializer = new ExpressionSerializer
+	final extension ActionSerializer actionSerializer = new ActionSerializer
 	protected Resource resource
 
 	protected Trace trace
@@ -51,10 +56,34 @@ class CTransformer {
 				
 			}«STRUCT_NAME»;
 			
-			public «STRUCT_NAME»(«FOR parameter : xSts.retrieveComponentParameters SEPARATOR ', '»«parameter.type.serialize» «parameter.name»«ENDFOR») {
+			/*public «STRUCT_NAME»(«FOR parameter : xSts.retrieveComponentParameters SEPARATOR ', '»«parameter.type.serialize» «parameter.name»«ENDFOR») {
 				«FOR parameter : xSts.retrieveComponentParameters»
 					this.«parameter.name» = «parameter.name»;
 				«ENDFOR»
+			}*/
+			
+			void reset(«STRUCT_NAME»* statechart) {
+			«««				Reference variables, e.g., enums, have to be set, as null is not a valid value, including regions: they have to be set to __Inactive__ explicitly on every reset
+				«FOR enumVariable : (xSts.retrieveEnumVariables.reject[xSts.retrieveComponentParameters.toList.contains(it)])»
+						statechart->«enumVariable.name» = «enumVariable.initialValue.serialize»;
+				«ENDFOR»
+				
+				/*clearOutEvents();
+				clearInEvents();*/
+				
+				«FOR variableDeclaration : xSts.retrieveNotTimeoutVariables»
+					«IF variableDeclaration.type instanceof TypeReference»
+					int «variableDeclaration.name»;
+					«ELSE»
+					«variableDeclaration.type.serialize» «variableDeclaration.name»;
+					«ENDIF»
+				«ENDFOR»
+								
+				«FOR variableDeclaration : xSts.retrieveTimeouts»
+					«variableDeclaration.type.serialize» «variableDeclaration.name»;
+				«ENDFOR»
+				
+				«xSts.serializeInitializingAction»
 			}
 			
 		'''
