@@ -90,7 +90,7 @@ class ExpressionSerializer {
 			val constant = expression.declaration as ConstantDeclaration
 			return constant.expression.serialize	
 		}
-		return expression.declaration.name
+		return "statechart->"+expression.declaration.name
 	}
 	
 	def dispatch String serialize(NotExpression expression) {

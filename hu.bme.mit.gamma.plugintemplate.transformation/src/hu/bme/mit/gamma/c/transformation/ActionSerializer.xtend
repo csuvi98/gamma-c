@@ -24,6 +24,7 @@ import static com.google.common.base.Preconditions.checkArgument
 import static extension hu.bme.mit.gamma.xsts.model.derivedfeatures.XSTSDerivedFeatures.*
 import hu.bme.mit.gamma.xsts.model.model.XSTS
 import hu.bme.mit.gamma.expression.model.ReferenceExpression
+import hu.bme.mit.gamma.expression.model.TypeReference
 
 class ActionSerializer {
 	
@@ -45,16 +46,16 @@ class ActionSerializer {
 	protected XSTS xSts;
 	protected boolean resetSerialization = false;
 	
-	def CharSequence serializeChangeState(Action action) '''
-		private void changeState() {
-			«action.serialize»
+	def CharSequence serializeChangeState(XSTS xSts, String STRUCT_NAME) '''
+		void changeState(«STRUCT_NAME»* statechart) {
+			«xSts.mergedAction.serialize»
 		}
 		
-		«serializeChangeStateAuxiliaryMethods»
+		«««serializeChangeStateAuxiliaryMethods»
 		
-		«serializeConditionAuxiliaryMethods»
+		«««serializeConditionAuxiliaryMethods»
 		
-		«serializeActionAuxiliaryMethods»
+		«««serializeActionAuxiliaryMethods»
 	'''
 	
 	def serializeInitializingAction(XSTS xSts) {
@@ -96,6 +97,9 @@ class ActionSerializer {
 			«FOR xStsSubaction : xStsAssignmentActions»
 				«xStsSubaction.serializeTemporaryAssignment»
 			«ENDFOR»
+			«IF resetSerialization == true»
+				«changeResetSerialization()»
+			«ENDIF»
 		'''
 	}
 	
@@ -148,9 +152,18 @@ class ActionSerializer {
 		val declaration = action.lhs.declaration
 		checkArgument(declaration instanceof VariableDeclaration)
 		val variable = (declaration as VariableDeclaration).originalVariable
+		if(resetSerialization){
+			
+		}
 		return '''
-			«variable.name» = «action.rhs.serialize»;
+			statechart->«variable.name» = «action.rhs.serialize»;
 		'''
+		/*«IF resetSerialization == true»
+				statechart->«variable.name» = «action.rhs.serialize»;
+				«variable.name» = statechart->«variable.name»;
+			«ELSE»
+				statechart->«variable.name» = «action.rhs.serialize»;
+			«ENDIF» */
 	}
 	
 	protected def CharSequence serializeFinalizationAssignment(VariableDeclaration variable) '''

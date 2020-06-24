@@ -71,20 +71,48 @@ class CTransformer {
 				/*clearOutEvents();
 				clearInEvents();*/
 				
-				«FOR variableDeclaration : xSts.retrieveNotTimeoutVariables»
-					«IF variableDeclaration.type instanceof TypeReference»
-					int «variableDeclaration.name»;
-					«ELSE»
-					«variableDeclaration.type.serialize» «variableDeclaration.name»;
-					«ENDIF»
-				«ENDFOR»
+				«««FOR variableDeclaration : xSts.retrieveNotTimeoutVariables»
+					«««IF variableDeclaration.type instanceof TypeReference»
+					«««int «variableDeclaration.name»;
+					«««ELSE»
+					«««variableDeclaration.type.serialize» «variableDeclaration.name»;
+					«««ENDIF»
+				«««ENDFOR»
 								
-				«FOR variableDeclaration : xSts.retrieveTimeouts»
-					«variableDeclaration.type.serialize» «variableDeclaration.name»;
-				«ENDFOR»
+				«««FOR variableDeclaration : xSts.retrieveTimeouts»
+					«««variableDeclaration.type.serialize» «variableDeclaration.name»;
+				«««ENDFOR»
 				
 				«xSts.serializeInitializingAction»
 			}
+			
+				void clearOutEvents(«STRUCT_NAME»* statechart){
+					«FOR event : xSts.retrieveOutEvents»
+						statechart->«event.name» = false;
+					«ENDFOR»
+					«««				Clearing transient event parameters
+					«FOR transientOutParameter : xSts.retrieveOutEventParameters.filter[xSts.transientVariables.contains(it)]»
+						«transientOutParameter.name» = «transientOutParameter.initialValue.serialize»;
+					«ENDFOR»
+				}
+				
+				void clearInEvents(«STRUCT_NAME»* statechart){
+					«FOR event : xSts.retrieveInEvents»
+						statechart->«event.name» = false;
+					«ENDFOR»
+					«««				Clearing transient event parameters
+					«FOR transientOutParameter : xSts.retrieveOutEventParameters.filter[xSts.transientVariables.contains(it)]»
+						«transientOutParameter.name» = «transientOutParameter.initialValue.serialize»;
+					«ENDFOR»
+				}
+				«xSts.serializeChangeState(STRUCT_NAME)»
+				
+				void runCycle(«STRUCT_NAME»* statechart){
+					clearOutEvents(statechart);
+					changeState(statechart);
+					clearInEvents(statechart);
+				}
+			
 			
 		'''
 	}
