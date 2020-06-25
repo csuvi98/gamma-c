@@ -47,7 +47,7 @@ class ActionSerializer {
 	protected boolean resetSerialization = false;
 	
 	def CharSequence serializeChangeState(XSTS xSts, String STRUCT_NAME) '''
-		void changeState(«STRUCT_NAME»* statechart) {
+		void changeState«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
 			«xSts.mergedAction.serialize»
 		}
 		

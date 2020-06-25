@@ -110,7 +110,6 @@ public class CommandHandler extends AbstractHandler {
 						IProject project = firstElement.getProject();
 						String targetFolderUri = project.getLocation().toString() +	"/" + "src-gen";
 						String basePackageName = project.getName().toLowerCase();
-						TimeUnit timeUnit = TimeUnit.MILLISECOND;
 						
 						CTransformer exampleTransformer = new CTransformer(resource, xSts);
 						
@@ -118,11 +117,16 @@ public class CommandHandler extends AbstractHandler {
 						IContainer pFolder = firstElement.getParent();
 						
 						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
-						String filepath = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
-						PrintWriter print = new PrintWriter(filepath, "UTF-8");
+						String filePathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "CStatemachine.c";
+						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
 						exampleTransformer.execute();
-						print.println(exampleTransformer.getModel());
-						print.close();
+						printModel.println(exampleTransformer.getModel());
+						printModel.close();
+						
+						String filePathHeader = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h";
+						PrintWriter printHeader = new PrintWriter(filePathHeader, "UTF-8");
+						printHeader.println(exampleTransformer.getHeader());
+						printHeader.close();
 						
 						//Trace trace = exampleTransformer.execute();
 						//saveModel(trace.getTargetPackage(), parentFolder.getLocation().toString(),
