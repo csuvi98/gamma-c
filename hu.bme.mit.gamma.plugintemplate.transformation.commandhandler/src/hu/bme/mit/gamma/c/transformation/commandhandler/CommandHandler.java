@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Level;
@@ -115,18 +116,28 @@ public class CommandHandler extends AbstractHandler {
 						
 						
 						IContainer pFolder = firstElement.getParent();
-						
+						String filePathHeader = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h";
 						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
 						String filePathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "CStatemachine.c";
 						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
-						exampleTransformer.execute();
+						exampleTransformer.execute(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h");
 						printModel.println(exampleTransformer.getModel());
 						printModel.close();
 						
-						String filePathHeader = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h";
+						//String filePathHeader = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h";
 						PrintWriter printHeader = new PrintWriter(filePathHeader, "UTF-8");
 						printHeader.println(exampleTransformer.getHeader());
 						printHeader.close();
+						
+						List<String> publicHeaderFiles = exampleTransformer.getPublicHeaders();
+						List<String> publicHeaderFileNames = exampleTransformer.getPublicHeaderFileNames();
+						
+						for(int header = 0; header < publicHeaderFiles.size(); header++) {
+							String publicHeaderFilePath = pFolder.getLocation().toString() + File.separator + publicHeaderFileNames.get(header) + ".h";
+							PrintWriter printPublicHeader = new PrintWriter(publicHeaderFilePath, "UTF-8");
+							printPublicHeader.print(publicHeaderFiles.get(header));
+							printPublicHeader.close();
+						}
 						
 						//Trace trace = exampleTransformer.execute();
 						//saveModel(trace.getTargetPackage(), parentFolder.getLocation().toString(),
