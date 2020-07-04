@@ -16,6 +16,7 @@ class CTransformer {
 	final extension InitialValueRetriever initialValueRetriever = new InitialValueRetriever
 	final extension ExpressionSerializer expressionSerializer = new ExpressionSerializer
 	final extension ActionSerializer actionSerializer = new ActionSerializer
+	final extension CStatechartWrapperGenerator cStatechartWrapperGenerator;
 	protected Resource resource
 
 	protected Trace trace
@@ -24,7 +25,9 @@ class CTransformer {
 	
 	protected String model;
 	protected String header;
+	protected String headerName;
 	protected String STRUCT_NAME;
+	protected String wrapper;
 	protected List<String> publicHeaders = new ArrayList<String>();
 	protected List<String> publicHeaderFileNames = new ArrayList<String>();
 
@@ -35,23 +38,25 @@ class CTransformer {
 		STRUCT_NAME = xSts.name.toFirstUpper + "Statemachine"
 		
 		this.trace = null
+		this.cStatechartWrapperGenerator = new CStatechartWrapperGenerator(this.xSts);
 		// Create VIATRA Batch transformation
 	}
 
-	def execute(String header) {
-		
+	def execute(String headerName) {
+		this.headerName = headerName
 		model = '''
 			#include <stdbool.h>
 			#include <stdio.h>
 			#include <stdlib.h>
-			#include "«header»"
+			#include "«headerName»"
+			«createStatechartWrapper()»
 			«createHeader()»
 			
-			void «STRUCT_NAME»InitEventParameters(«STRUCT_NAME»* statechart, «FOR parameter : xSts.retrieveComponentParameters SEPARATOR ', '»«parameter.type.serialize» «parameter.name»«ENDFOR») {
-				«FOR parameter : xSts.retrieveComponentParameters»
-					statechart->«parameter.name» = «parameter.name»;
-				«ENDFOR»
-			}
+			«««void «STRUCT_NAME»InitEventParameters(«STRUCT_NAME»* statechart, «FOR parameter : xSts.retrieveComponentParameters SEPARATOR ', '»«parameter.type.serialize» «parameter.name»«ENDFOR») {
+			«««	«FOR parameter : xSts.retrieveComponentParameters»
+			«««		statechart->«parameter.name» = «parameter.name»;
+			«««	«ENDFOR»
+			«««}
 			
 			void reset«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
 			«««				Reference variables, e.g., enums, have to be set, as null is not a valid value, including regions: they have to be set to __Inactive__ explicitly on every reset
@@ -114,9 +119,17 @@ class CTransformer {
 					changeState«STRUCT_NAME»(statechart);
 					clearInEvents«STRUCT_NAME»(statechart);
 				}
-			
+				
 			
 		'''
+	}
+	
+	def void createStatechartWrapper(){
+		wrapper = createWrapper(STRUCT_NAME, headerName)
+	}
+	
+	def getWrapper(){
+		return wrapper;
 	}
 	
 	def getModel(){
@@ -132,6 +145,7 @@ class CTransformer {
 			«FOR typeDeclarations: xSts.publicTypeDeclarations»
 				#include "«typeDeclarations.name».h"
 			«ENDFOR»
+			#include <stdbool.h>
 			#ifndef «STRUCT_NAME.toUpperCase»_HEADER
 			#define «STRUCT_NAME.toUpperCase»_HEADER
 			
@@ -155,7 +169,7 @@ class CTransformer {
 							
 			}«STRUCT_NAME»;
 			
-			void «STRUCT_NAME»InitEventParameters(«STRUCT_NAME»* statechart, «FOR parameter : xSts.retrieveComponentParameters SEPARATOR ', '»«parameter.type.serialize» «parameter.name»«ENDFOR»);
+			«««void «STRUCT_NAME»InitEventParameters(«STRUCT_NAME»* statechart, «FOR parameter : xSts.retrieveComponentParameters SEPARATOR ', '»«parameter.type.serialize» «parameter.name»«ENDFOR»);
 			
 			void reset«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 			

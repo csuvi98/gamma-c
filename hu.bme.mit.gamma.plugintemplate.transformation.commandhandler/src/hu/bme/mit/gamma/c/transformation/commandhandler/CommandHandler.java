@@ -139,6 +139,13 @@ public class CommandHandler extends AbstractHandler {
 							printPublicHeader.close();
 						}
 						
+						
+						String wrapperPathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "WrappedStatemachine.c";
+						PrintWriter wrapperPrintModel = new PrintWriter(wrapperPathModel, "UTF-8");
+						wrapperPrintModel.println(exampleTransformer.getWrapper());
+						wrapperPrintModel.close();
+						
+						
 						//Trace trace = exampleTransformer.execute();
 						//saveModel(trace.getTargetPackage(), parentFolder.getLocation().toString(),
 						//		trace.getTargetPackage().getName() + "Copy.gcd");
