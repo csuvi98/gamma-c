@@ -28,6 +28,8 @@ class CTransformer {
 	protected String headerName;
 	protected String STRUCT_NAME;
 	protected String wrapper;
+	protected String wrapperHeader;
+	protected String wrapperHeaderName;
 	protected List<String> publicHeaders = new ArrayList<String>();
 	protected List<String> publicHeaderFileNames = new ArrayList<String>();
 
@@ -49,6 +51,7 @@ class CTransformer {
 			#include <stdio.h>
 			#include <stdlib.h>
 			#include "«headerName»"
+			«createStatechartWrapperHeader»
 			«createStatechartWrapper()»
 			«createHeader()»
 			
@@ -125,7 +128,11 @@ class CTransformer {
 	}
 	
 	def void createStatechartWrapper(){
-		wrapper = createWrapper(STRUCT_NAME, headerName)
+		wrapper = createWrapper(STRUCT_NAME, headerName, wrapperHeaderName)
+	}
+	
+	def void createStatechartWrapperHeader(){
+		wrapperHeader = createWrapperHeader(STRUCT_NAME, headerName)
 	}
 	
 	def getWrapper(){
@@ -138,6 +145,10 @@ class CTransformer {
 	
 	def getHeader(){
 		return header;
+	}
+	
+	def getWrapperHeader(){
+		return wrapperHeader;
 	}
 	
 	def void createHeader(){
@@ -231,6 +242,10 @@ class CTransformer {
 	
 	def getPublicHeaderFileNames(){
 		return publicHeaderFileNames;
+	}
+	
+	def setWrapperHeaderName(String wrapperHeaderName){
+		this.wrapperHeaderName = wrapperHeaderName
 	}
 	
 	private def getPrivateTypeDeclarations(XSTS xSts) {

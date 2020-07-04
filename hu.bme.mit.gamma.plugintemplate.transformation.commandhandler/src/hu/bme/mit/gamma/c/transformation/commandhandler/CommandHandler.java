@@ -120,6 +120,8 @@ public class CommandHandler extends AbstractHandler {
 						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
 						String filePathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "CStatemachine.c";
 						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
+						exampleTransformer.setWrapperHeaderName(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "WrappedStatemachineHeader.h");
+						
 						exampleTransformer.execute(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h");
 						printModel.println(exampleTransformer.getModel());
 						printModel.close();
@@ -139,11 +141,19 @@ public class CommandHandler extends AbstractHandler {
 							printPublicHeader.close();
 						}
 						
+						String wrapperHeaderPathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "WrappedStatemachineHeader.h";
+						
+						PrintWriter wrapperHeaderPrintModel = new PrintWriter(wrapperHeaderPathModel, "UTF-8");
+						wrapperHeaderPrintModel.println(exampleTransformer.getWrapperHeader());
+						wrapperHeaderPrintModel.close();
+						
 						
 						String wrapperPathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "WrappedStatemachine.c";
 						PrintWriter wrapperPrintModel = new PrintWriter(wrapperPathModel, "UTF-8");
 						wrapperPrintModel.println(exampleTransformer.getWrapper());
 						wrapperPrintModel.close();
+						
+						
 						
 						
 						//Trace trace = exampleTransformer.execute();
