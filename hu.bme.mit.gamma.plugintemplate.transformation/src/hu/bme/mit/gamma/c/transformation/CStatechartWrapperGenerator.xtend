@@ -15,8 +15,8 @@ class CStatechartWrapperGenerator {
 	def createWrapperHeader(String STRUCT_NAME, String header){
 		return'''
 			#include <sys/time.h>
-			#ifndef «STRUCT_NAME.toUpperCase»_HEADER
-			#define «STRUCT_NAME.toUpperCase»_HEADER
+			#ifndef «STRUCT_NAME.toUpperCase»WRAPPER_HEADER
+			#define «STRUCT_NAME.toUpperCase»WRAPPER_HEADER
 			
 			typedef struct «STRUCT_NAME»Wrapper{
 				«STRUCT_NAME» «STRUCT_NAME.toFirstLower»;
@@ -29,7 +29,7 @@ class CStatechartWrapperGenerator {
 			
 			void wrappedReset«STRUCT_NAME»(«STRUCT_NAME»Wrapper* wrappedStatechart);
 			
-			#endif /* «STRUCT_NAME.toUpperCase»_HEADER */
+			#endif /* «STRUCT_NAME.toUpperCase»WRAPPER_HEADER */
 		'''
 	}
 	
@@ -41,7 +41,7 @@ class CStatechartWrapperGenerator {
 			
 			
 			void set«STRUCT_NAME»Statechart(«STRUCT_NAME»Wrapper wrappedStatechart, «STRUCT_NAME»* statechart){
-				wrappedStatechart.«STRUCT_NAME.toFirstLower» = statechart;
+				wrappedStatechart.«STRUCT_NAME.toFirstLower» = *statechart;
 			}
 			
 			
@@ -49,7 +49,7 @@ class CStatechartWrapperGenerator {
 				gettimeofday(&(wrappedStatechart->elapsedTimeval), NULL);
 				long elapsedTime = (((wrappedStatechart->elapsedTimeval.tv_sec - wrappedStatechart->startTimeval.tv_sec) * 1000000 + wrappedStatechart->elapsedTimeval.tv_usec - wrappedStatechart->startTimeval.tv_usec)/1000);
 				«FOR timeout : xSts.clockVariables»
-					set«timeout.name.toFirstUpper»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»), get«timeout.name.toFirstUpper»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»)) + elapsedTime);
+					set«timeout.name.toFirstUpper»«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»), get«timeout.name.toFirstUpper»«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»)) + elapsedTime);
 				«ENDFOR»
 				runCycle«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»));
 				gettimeofday(&(wrappedStatechart->startTimeval), NULL);

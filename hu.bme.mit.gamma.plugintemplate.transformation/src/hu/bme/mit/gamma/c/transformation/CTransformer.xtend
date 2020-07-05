@@ -86,11 +86,11 @@ class CTransformer {
 			«FOR variable : xSts.variableGroups
 								.map[it.variables]
 								.flatten SEPARATOR System.lineSeparator»
-				void set«variable.name.toFirstUpper»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name») {
+				void set«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name») {
 					statechart->«variable.name» = «variable.name»;
 				}
 							
-				«variable.type.serialize» get«variable.name.toFirstUpper»(«STRUCT_NAME»* statechart) {
+				«variable.type.serialize» get«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
 					return statechart->«variable.name»;
 				}
 			«ENDFOR»
@@ -188,9 +188,9 @@ class CTransformer {
 			«FOR variable : xSts.variableGroups
 											.map[it.variables]
 											.flatten SEPARATOR System.lineSeparator»
-				void set«variable.name.toFirstUpper»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name»);
+				void set«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name»);
 										
-				«variable.type.serialize» get«variable.name.toFirstUpper»(«STRUCT_NAME»* statechart);
+				«variable.type.serialize» get«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 
 			«ENDFOR»
 			
