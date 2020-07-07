@@ -86,7 +86,7 @@ class GammaToXSTSTransformer {
 		return _package.execute.serializeXSTS.toString
 	}
 	
-	private def execute(hu.bme.mit.gamma.statechart.model.Package _package) {
+	 def execute(hu.bme.mit.gamma.statechart.model.Package _package) {
 		val gammaComponent = _package.components.head // Getting the first component
 		val lowlevelPackage = gammaToLowlevelTransformer.transform(_package) // Not execute, as we want to distinguish between statecharts
 		// Serializing the xSTS

@@ -43,6 +43,7 @@ import hu.bme.mit.gamma.statechart.model.StatechartDefinition;
 import hu.bme.mit.gamma.statechart.model.TimeUnit;
 import hu.bme.mit.gamma.statechart.model.composite.Component;
 import hu.bme.mit.gamma.xsts.model.model.XSTS;
+import hu.bme.mit.gamma.xsts.transformation.GammaToXSTSTransformer;
 
 public class CommandHandler extends AbstractHandler {
 	
@@ -75,6 +76,8 @@ public class CommandHandler extends AbstractHandler {
 						logger.log(Level.INFO, "The Gamma - low level statechart transformation has been finished.");
 						logger.log(Level.INFO, "Starting Gamma low level - xSTS transformation.");
 						// Note: the package is not in a resource
+						
+						
 						LowlevelToXSTSTransformer lowlevelTransformer = new LowlevelToXSTSTransformer(lowlevelPackage);
 						Entry<XSTS, L2STrace> resultModels = lowlevelTransformer.execute();
 						XSTS xSts = resultModels.getKey();
@@ -115,7 +118,11 @@ public class CommandHandler extends AbstractHandler {
 						CTransformer exampleTransformer = new CTransformer(resource, xSts);
 						
 						
+						
+						
+						
 						IContainer pFolder = firstElement.getParent();
+						
 						String filePathHeader = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h";
 						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
 						String filePathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "CStatemachine.c";
