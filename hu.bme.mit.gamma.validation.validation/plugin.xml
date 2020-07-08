@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?><plugin>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.choicesWithFewOutgoingTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.ChoicesWithFewOutgoingTransitionsConstraint0" name="hu.bme.mit.gamma.validation.choicesWithFewOutgoingTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.choicesWithTriggeredOutgoingTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.ChoicesWithTriggeredOutgoingTransitionsConstraint0" name="hu.bme.mit.gamma.validation.choicesWithTriggeredOutgoingTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.choicesWithUnguardedOutgoingTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.ChoicesWithUnguardedOutgoingTransitionsConstraint0" name="hu.bme.mit.gamma.validation.choicesWithUnguardedOutgoingTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.entryStatesWithIncomingTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.EntryStatesWithIncomingTransitionsConstraint0" name="hu.bme.mit.gamma.validation.entryStatesWithIncomingTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.entryStatesWithMoreOutgoingTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.EntryStatesWithMoreOutgoingTransitionsConstraint0" name="hu.bme.mit.gamma.validation.entryStatesWithMoreOutgoingTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.entryStatesWithTriggeredOutgoingTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.EntryStatesWithTriggeredOutgoingTransitionsConstraint0" name="hu.bme.mit.gamma.validation.entryStatesWithTriggeredOutgoingTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.finalStatesWithOutgoingTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.FinalStatesWithOutgoingTransitionsConstraint0" name="hu.bme.mit.gamma.validation.finalStatesWithOutgoingTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.inOutTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.InOutTransitionsConstraint0" name="hu.bme.mit.gamma.validation.inOutTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.notTopElseExpression" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.NotTopElseExpressionConstraint0" name="hu.bme.mit.gamma.validation.notTopElseExpression">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.occludedTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.OccludedTransitionsConstraint0" name="hu.bme.mit.gamma.validation.occludedTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.occludingTimeEventSpecs" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.OccludingTimeEventSpecsConstraint0" name="hu.bme.mit.gamma.validation.occludingTimeEventSpecs">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.prohibitedEventParameterReferences" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.ProhibitedEventParameterReferencesConstraint0" name="hu.bme.mit.gamma.validation.prohibitedEventParameterReferences">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.regionsWithMoreEntries" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.RegionsWithMoreEntriesConstraint0" name="hu.bme.mit.gamma.validation.regionsWithMoreEntries">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.regionsWithoutEntry" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.RegionsWithoutEntryConstraint0" name="hu.bme.mit.gamma.validation.regionsWithoutEntry">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.sameTrigger" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.SameTriggerConstraint0" name="hu.bme.mit.gamma.validation.sameTrigger">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.sameTriggerDifferentAssignment" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.SameTriggerDifferentAssignmentConstraint0" name="hu.bme.mit.gamma.validation.sameTriggerDifferentAssignment">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.sameTriggerSameEvent" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.SameTriggerSameEventConstraint0" name="hu.bme.mit.gamma.validation.sameTriggerSameEvent">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.semanticInEventsOfActions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.SemanticInEventsOfActionsConstraint0" name="hu.bme.mit.gamma.validation.semanticInEventsOfActions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.semanticOutEventsOfTriggers" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.SemanticOutEventsOfTriggersConstraint0" name="hu.bme.mit.gamma.validation.semanticOutEventsOfTriggers">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.transitionsAcrossOrthogonalRegions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.TransitionsAcrossOrthogonalRegionsConstraint0" name="hu.bme.mit.gamma.validation.transitionsAcrossOrthogonalRegions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.transitionsIntoOrthogonalRegions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.TransitionsIntoOrthogonalRegionsConstraint0" name="hu.bme.mit.gamma.validation.transitionsIntoOrthogonalRegions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.transitionsOfSameSourceAndTrigger" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.TransitionsOfSameSourceAndTriggerConstraint0" name="hu.bme.mit.gamma.validation.transitionsOfSameSourceAndTrigger">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.unreachableNodes" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.UnreachableNodesConstraint0" name="hu.bme.mit.gamma.validation.unreachableNodes">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.untriggeredTransitions" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.UntriggeredTransitionsConstraint0" name="hu.bme.mit.gamma.validation.untriggeredTransitions">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.unusedEvents" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.UnusedEventsConstraint0" name="hu.bme.mit.gamma.validation.unusedEvents">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+  <extension id="validation.constraint.hu.bme.mit.gamma.validation.unusedVariables" point="org.eclipse.viatra.addon.validation.runtime.constraint">
+    <constraint class="hu.bme.mit.gamma.validation.UnusedVariablesConstraint0" name="hu.bme.mit.gamma.validation.unusedVariables">
+      <enabledForEditor editorId="hu.bme.mit.gamma.statechart.model.presentation.StatechartModelEditorID"/>
+    </constraint>
+  </extension>
+</plugin>
