@@ -28,6 +28,7 @@ import hu.bme.mit.gamma.statechart.language.ui.internal.LanguageActivator;
 import hu.bme.mit.gamma.statechart.language.ui.serializer.StatechartLanguageSerializer;
 import hu.bme.mit.gamma.xsts.model.model.XSTS;
 import hu.bme.mit.gamma.xsts.transformation.GammaToXSTSTransformer;
+import hu.bme.mit.gamma.statechart.interface_.Package;
 
 public class CommandHandler extends AbstractHandler {
 	
@@ -51,7 +52,7 @@ public class CommandHandler extends AbstractHandler {
 						
 						GammaToXSTSTransformer gammaToXSTSTransformer = new GammaToXSTSTransformer();
 						
-						XSTS xSts = gammaToXSTSTransformer.execute(compositeSystem);
+						XSTS xSts = gammaToXSTSTransformer.preprocessAndExecute(compositeSystem);
 						
 						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
 						String filePathModel = parentFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "Component.c";
