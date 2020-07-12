@@ -3,7 +3,9 @@ package hu.bme.mit.gamma.c.component.transformation.commandhandler;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +26,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import com.google.inject.Injector;
 
 import hu.bme.mit.gamma.c.transformation.CTransformer;
+import hu.bme.mit.gamma.expression.model.Expression;
 import hu.bme.mit.gamma.statechart.language.ui.internal.LanguageActivator;
 import hu.bme.mit.gamma.statechart.language.ui.serializer.StatechartLanguageSerializer;
 import hu.bme.mit.gamma.xsts.model.model.XSTS;
@@ -50,12 +53,19 @@ public class CommandHandler extends AbstractHandler {
 						// Model processing
 						Package compositeSystem = (Package) resource.getContents().get(0);
 						
+						String filePathModel = parentFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "Component.c";
+						
+						List<Expression> expressionList = new ArrayList<Expression>();
+						
 						GammaToXSTSTransformer gammaToXSTSTransformer = new GammaToXSTSTransformer();
 						
-						XSTS xSts = gammaToXSTSTransformer.preprocessAndExecute(compositeSystem);
+						File outputFile = new File(filePathModel);
+						XSTS xSts = gammaToXSTSTransformer.preprocessAndExecute(compositeSystem,expressionList,outputFile);
+						
+						//CTransformer cTransformer = new CTransformer
 						
 						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
-						String filePathModel = parentFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "Component.c";
+						
 						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
 						
 						CTransformer cTransformer = new CTransformer(resource, xSts);

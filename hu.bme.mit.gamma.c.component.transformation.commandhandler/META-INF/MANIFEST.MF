@@ -16,6 +16,7 @@ Require-Bundle: org.eclipse.core.commands;bundle-version="3.9.0",
  hu.bme.mit.gamma.statechart.language.ui,
  hu.bme.mit.gamma.xsts.model;bundle-version="2.3.1",
  hu.bme.mit.gamma.xsts.transformation;bundle-version="2.3.1",
- hu.bme.mit.gamma.c.transformation;bundle-version="2.3.1"
+ hu.bme.mit.gamma.c.transformation;bundle-version="2.3.1",
+ hu.bme.mit.gamma.expression.language;bundle-version="2.3.1"
 Automatic-Module-Name: hu.bme.mit.gamma.c.component
 Import-Package: com.google.inject
