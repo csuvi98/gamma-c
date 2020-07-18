@@ -1,0 +1,151 @@
+/********************************************************************************
+ * Copyright (c) 2018-2020 Contributors to the Gamma project
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * SPDX-License-Identifier: EPL-1.0
+ ********************************************************************************/
+grammar hu.bme.mit.gamma.property.language.PropertyLanguage with hu.bme.mit.gamma.statechart.language.StatechartLanguage
+
+import "http://www.mit.bme.hu/gamma/property/Model"
+import "http://www.mit.bme.hu/gamma/statechart/Model/Interface" as interface
+import "http://www.mit.bme.hu/gamma/expression/Model" as expression
+import "http://www.mit.bme.hu/gamma/statechart/Model/Composite" as composite
+import "http://www.mit.bme.hu/gamma/statechart/Model/Statechart" as statechart
+import "http://www.eclipse.org/emf/2002/Ecore" as ecore
+
+PropertyPackage returns PropertyPackage:
+	'import' ^import+=[interface::Package| STRING]
+	'component' component=[interface::Component]
+	('formula' formulas+=StateFormula)*
+;
+
+// State formula
+
+StateFormula returns StateFormula:
+	ParenthesesStateFormula | AtomicFormula | QuantifiedFormula
+;
+
+ParenthesesStateFormula returns StateFormula:
+	 '(' StateFormula ')'
+;
+
+AtomicFormula returns AtomicFormula:
+	'{' expression=Expression '}'
+;
+
+QuantifiedFormula returns QuantifiedFormula:
+	quantifier=PathQuantifier formula=PathFormula
+;
+
+// Path formula
+
+PathFormula returns PathFormula:
+	ImplyPathFormula
+;
+
+ImplyPathFormula returns PathFormula:
+	OrPathFormula ({BinaryOperandLogicalPathFormula.leftOperand=current} operator=ImplyOperator rightOperand=ImplyPathFormula)?
+;
+
+OrPathFormula returns PathFormula:
+	XorPathFormula ({BinaryOperandLogicalPathFormula.leftOperand=current} operator=OrOperator rightOperand=OrPathFormula)?
+;
+
+XorPathFormula returns PathFormula:
+	AndPathFormula ({BinaryOperandLogicalPathFormula.leftOperand=current} operator=XorOperator rightOperand=XorPathFormula)?
+;
+
+AndPathFormula returns PathFormula:
+	UnaryPathFormula ({BinaryOperandLogicalPathFormula.leftOperand=current} operator=AndOperator rightOperand=AndPathFormula)?
+;
+
+UnaryPathFormula returns PathFormula:
+	NotPathFormula | UnaryOperandPathFormula | BinaryOperandPathFormula
+;
+
+NotPathFormula returns UnaryOperandLogicalPathFormula:
+	operator=NotOperator operand=PrimaryPathFormula
+;
+
+UnaryOperandPathFormula returns UnaryOperandPathFormula:
+	operator=UnaryPathOperator operand=PrimaryPathFormula
+;
+
+BinaryOperandPathFormula returns PathFormula:
+	PrimaryPathFormula ({BinaryOperandPathFormula.leftOperand=current} operator=BinaryPathOperator rightOperand=BinaryOperandPathFormula)?
+;
+
+PrimaryPathFormula returns PathFormula:
+	'[' StateFormula ']' | ParenthesesPathFormula
+;
+
+ParenthesesPathFormula returns PathFormula:
+	'('PathFormula')'
+;
+
+// Literals
+
+@Override
+PrimaryExpression returns expression::Expression:
+	LiteralExpression | ComponentInstanceStateExpression | '(' Expression ')'
+;
+
+ComponentInstanceStateExpression returns ComponentInstanceStateExpression:
+	ComponentInstanceStateConfigurationReference | ComponentInstanceVariableReference |
+		ComponentInstanceEventReference | ComponentInstanceEventParameterReference
+;
+
+ComponentInstanceStateConfigurationReference returns ComponentInstanceStateConfigurationReference:
+	'state' instance=ComponentInstanceReference '.' region=[statechart::Region] '.' state=[statechart::State]
+;
+
+ComponentInstanceVariableReference returns ComponentInstanceVariableReference:
+	'var' instance=ComponentInstanceReference '.' variable=[expression::VariableDeclaration]
+;
+
+ComponentInstanceEventReference returns ComponentInstanceEventReference:
+	'event' instance=ComponentInstanceReference '.' port=[interface::Port] '.' event=[interface::Event]
+;
+
+ComponentInstanceEventParameterReference returns ComponentInstanceEventParameterReference:
+	'param' instance=ComponentInstanceReference '.' port=[interface::Port] '.'
+		event=[interface::Event] '::' parameter=[expression::ParameterDeclaration]
+;
+
+// Operators
+
+enum PathQuantifier returns PathQuantifier:
+	FORALL = 'A' | EXISTS = 'E'
+;
+
+enum UnaryPathOperator returns UnaryPathOperator:
+	GLOBAL = 'G' | FUTURE = 'F' | NEXT = 'X'
+;
+
+enum BinaryPathOperator returns BinaryPathOperator:
+	UNTIL = 'U' | RELEASE = 'R'
+;
+
+enum NotOperator returns UnaryLogicalOperator:
+	NOT='!'
+;
+
+enum AndOperator returns BinaryLogicalOperator:
+	AND = '&&'
+;
+
+enum XorOperator returns BinaryLogicalOperator:
+	XOR = '^'
+;
+
+enum OrOperator returns BinaryLogicalOperator:
+	OR = '||'
+;
+
+enum ImplyOperator returns BinaryLogicalOperator:
+	IMPLY = '->'
+;

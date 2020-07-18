@@ -4,10 +4,12 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
@@ -15,11 +17,17 @@ import org.eclipse.emf.ecore.EObject;
 
 import hu.bme.mit.gamma.genmodel.model.AnalysisLanguage;
 import hu.bme.mit.gamma.genmodel.model.Verification;
+import hu.bme.mit.gamma.property.model.PropertyPackage;
+import hu.bme.mit.gamma.property.model.StateFormula;
+import hu.bme.mit.gamma.querygenerator.serializer.PropertySerializer;
+import hu.bme.mit.gamma.querygenerator.serializer.ThetaPropertySerializer;
+import hu.bme.mit.gamma.querygenerator.serializer.UppaalPropertySerializer;
 import hu.bme.mit.gamma.theta.verification.ThetaVerifier;
-import hu.bme.mit.gamma.trace.TraceUtil;
 import hu.bme.mit.gamma.trace.model.ExecutionTrace;
 import hu.bme.mit.gamma.trace.testgeneration.java.TestGenerator;
+import hu.bme.mit.gamma.trace.util.TraceUtil;
 import hu.bme.mit.gamma.uppaal.verification.UppaalVerifier;
+import hu.bme.mit.gamma.util.FileUtil;
 import hu.bme.mit.gamma.util.GammaEcoreUtil;
 
 public class VerificationHandler extends TaskHandler {
@@ -36,13 +44,16 @@ public class VerificationHandler extends TaskHandler {
 		Set<AnalysisLanguage> languagesSet = new HashSet<AnalysisLanguage>(verification.getLanguages());
 		checkArgument(languagesSet.size() == 1);
 		AbstractVerification verificationTask = null;
+		PropertySerializer propertySerializer = null;
 		for (AnalysisLanguage analysisLanguage : languagesSet) {
 			switch (analysisLanguage) {
 				case UPPAAL:
-					verificationTask = new UppaalVerification();
+					verificationTask = UppaalVerification.INSTANCE;
+					propertySerializer = UppaalPropertySerializer.INSTANCE;
 					break;
 				case THETA:
-					verificationTask = new ThetaVerification();
+					verificationTask = ThetaVerification.INSTANCE;
+					propertySerializer = ThetaPropertySerializer.INSTANCE;
 					break;
 				default:
 					throw new IllegalArgumentException("Currently only UPPAAL and Theta are supported.");
@@ -51,32 +62,52 @@ public class VerificationHandler extends TaskHandler {
 		String filePath = verification.getFileName().get(0);
 		File modelFile = new File(filePath);
 		
-		for (String queryFileLocation : verification.getQueryFiles()) {
+		List<String> queryFileLocations = new ArrayList<String>();
+		// String locations
+		queryFileLocations.addAll(verification.getQueryFiles());
+		// Serializing property models
+		for (PropertyPackage propertyPackage : verification.getPropertyPackages()) {
+			File file = ecoreUtil.getFile(propertyPackage.eResource());
+			String fileName = fileUtil.toHiddenFileName(fileUtil.changeExtension(file.getName(), "pd"));
+			File newFile = new File(file.getParentFile().toString() + File.separator + fileName);
+			StringBuilder formulas = new StringBuilder();
+			for (StateFormula formula : propertyPackage.getFormulas()) {
+				String serializedFormula = propertySerializer.serialize(formula);
+				formulas.append(serializedFormula + System.lineSeparator());
+			}
+			fileUtil.saveString(newFile, formulas.toString());
+			newFile.deleteOnExit();
+			queryFileLocations.add(newFile.toString());
+		}
+		
+		for (String queryFileLocation : queryFileLocations) {
 			logger.log(Level.INFO, "Checking " + queryFileLocation + "...");
 			File queryFile = new File(queryFileLocation);
 			
 			ExecutionTrace trace = verificationTask.execute(modelFile, queryFile);
-			
-			if (verification.isOptimize()) {
-				logger.log(Level.INFO, "Optimizing trace...");
-				traceUtil.removeCoveredSteps(trace);
-			}
-			
-			String basePackage = verification.getPackageName().get(0);
-			String traceFolder = targetFolderUri;
-			
-			Entry<String, Integer> fileNamePair = fileUtil.getFileName(new File(traceFolder), "ExecutionTrace", "get");
-			String fileName = fileNamePair.getKey();
-			Integer id = fileNamePair.getValue();
-			saveModel(trace, traceFolder, fileName);
-			
-			String className = fileUtil.getExtensionlessName(fileName).replace(id.toString(), "");
-			className += "Simulation" + id;
-			TestGenerator testGenerator = new TestGenerator(trace, basePackage, className);
-			String testCode = testGenerator.execute();
-			String testFolder = testFolderUri;
-			fileUtil.saveString(testFolder + File.separator + testGenerator.getPackageName().replaceAll("\\.", "/") +
+			// Maybe there is no trace
+			if (trace != null) {
+				if (verification.isOptimize()) {
+					logger.log(Level.INFO, "Optimizing trace...");
+					traceUtil.removeCoveredSteps(trace);
+				}
+				
+				String basePackage = verification.getPackageName().get(0);
+				String traceFolder = targetFolderUri;
+				
+				Entry<String, Integer> fileNamePair = fileUtil.getFileName(new File(traceFolder), "ExecutionTrace", "get");
+				String fileName = fileNamePair.getKey();
+				Integer id = fileNamePair.getValue();
+				saveModel(trace, traceFolder, fileName);
+				
+				String className = fileUtil.getExtensionlessName(fileName).replace(id.toString(), "");
+				className += "Simulation" + id;
+				TestGenerator testGenerator = new TestGenerator(trace, basePackage, className);
+				String testCode = testGenerator.execute();
+				String testFolder = testFolderUri;
+				fileUtil.saveString(testFolder + File.separator + testGenerator.getPackageName().replaceAll("\\.", "/") +
 					File.separator + className + ".java", testCode);
+			}
 		}
 	}
 
@@ -96,36 +127,45 @@ public class VerificationHandler extends TaskHandler {
 		verification.getQueryFiles().replaceAll(it -> fileUtil.exploreRelativeFile(file, it).toString());
 	}
 	
-	abstract class AbstractVerification {
-		protected GammaEcoreUtil ecoreUtil = GammaEcoreUtil.INSTANCE;
-		public abstract ExecutionTrace execute(File modelFile, File queryFile);
-	}
+}
+
+abstract class AbstractVerification {
+
+	protected FileUtil fileUtil = FileUtil.INSTANCE;
+	protected GammaEcoreUtil ecoreUtil = GammaEcoreUtil.INSTANCE;
+	public abstract ExecutionTrace execute(File modelFile, File queryFile);
 	
-	class UppaalVerification extends AbstractVerification {
+}
 
-		@Override
-		public ExecutionTrace execute(File modelFile, File queryFile) {
-			String packageFileName =
-					fileUtil.toHiddenFileName(fileUtil.changeExtension(modelFile.getName(), "g2u"));
-			EObject gammaTrace = ecoreUtil.normalLoad(modelFile.getParent(), packageFileName);
-			UppaalVerifier verifier = new UppaalVerifier();
-			return verifier.verifyQuery(gammaTrace, "-C -T -t0", modelFile, queryFile, true, true);
-		}
-
+class UppaalVerification extends AbstractVerification {
+	// Singleton
+	public static final UppaalVerification INSTANCE = new UppaalVerification();
+	protected UppaalVerification() {}
+	//
+	@Override
+	public ExecutionTrace execute(File modelFile, File queryFile) {
+		String packageFileName =
+				fileUtil.toHiddenFileName(fileUtil.changeExtension(modelFile.getName(), "g2u"));
+		EObject gammaTrace = ecoreUtil.normalLoad(modelFile.getParent(), packageFileName);
+		UppaalVerifier verifier = UppaalVerifier.INSTANCE;
+		return verifier.verifyQuery(gammaTrace, "-C -T -t0", modelFile, queryFile, true, true);
 	}
-	
-	class ThetaVerification extends AbstractVerification {
 
-		@Override
-		public ExecutionTrace execute(File modelFile, File queryFile) {
-			String packageFileName =
-					fileUtil.toHiddenFileName(fileUtil.changeExtension(modelFile.getName(), "gsm"));
-			EObject gammaPackage = ecoreUtil.normalLoad(modelFile.getParent(), packageFileName);
-			ThetaVerifier verifier = new ThetaVerifier();
-			String queries = fileUtil.loadString(queryFile);
-			return verifier.verifyQuery(gammaPackage, "", modelFile, queries, true, true);
-		}
-		
+}
+
+class ThetaVerification extends AbstractVerification {
+	// Singleton
+	public static final ThetaVerification INSTANCE = new ThetaVerification();
+	protected ThetaVerification() {}
+	//
+	@Override
+	public ExecutionTrace execute(File modelFile, File queryFile) {
+		String packageFileName =
+				fileUtil.toHiddenFileName(fileUtil.changeExtension(modelFile.getName(), "gsm"));
+		EObject gammaPackage = ecoreUtil.normalLoad(modelFile.getParent(), packageFileName);
+		ThetaVerifier verifier = ThetaVerifier.INSTANCE;
+		String queries = fileUtil.loadString(queryFile);
+		return verifier.verifyQuery(gammaPackage, "", modelFile, queries, true, true);
 	}
 	
 }

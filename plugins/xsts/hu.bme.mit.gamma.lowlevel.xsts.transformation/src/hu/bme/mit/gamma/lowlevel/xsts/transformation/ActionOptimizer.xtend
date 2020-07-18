@@ -13,27 +13,30 @@ package hu.bme.mit.gamma.lowlevel.xsts.transformation
 import hu.bme.mit.gamma.expression.model.VariableDeclaration
 import hu.bme.mit.gamma.expression.util.ExpressionUtil
 import hu.bme.mit.gamma.util.GammaEcoreUtil
-import hu.bme.mit.gamma.xsts.model.model.Action
-import hu.bme.mit.gamma.xsts.model.model.AssignmentAction
-import hu.bme.mit.gamma.xsts.model.model.AssumeAction
-import hu.bme.mit.gamma.xsts.model.model.AtomicAction
-import hu.bme.mit.gamma.xsts.model.model.CompositeAction
-import hu.bme.mit.gamma.xsts.model.model.EmptyAction
-import hu.bme.mit.gamma.xsts.model.model.NonDeterministicAction
-import hu.bme.mit.gamma.xsts.model.model.OrthogonalAction
-import hu.bme.mit.gamma.xsts.model.model.ParallelAction
-import hu.bme.mit.gamma.xsts.model.model.SequentialAction
-import hu.bme.mit.gamma.xsts.model.model.XSTSModelFactory
+import hu.bme.mit.gamma.xsts.model.Action
+import hu.bme.mit.gamma.xsts.model.AssignmentAction
+import hu.bme.mit.gamma.xsts.model.AssumeAction
+import hu.bme.mit.gamma.xsts.model.AtomicAction
+import hu.bme.mit.gamma.xsts.model.CompositeAction
+import hu.bme.mit.gamma.xsts.model.EmptyAction
+import hu.bme.mit.gamma.xsts.model.NonDeterministicAction
+import hu.bme.mit.gamma.xsts.model.OrthogonalAction
+import hu.bme.mit.gamma.xsts.model.ParallelAction
+import hu.bme.mit.gamma.xsts.model.SequentialAction
+import hu.bme.mit.gamma.xsts.model.XSTSModelFactory
 import java.util.Collection
 import java.util.List
 
 import static com.google.common.base.Preconditions.checkState
 
-import static extension hu.bme.mit.gamma.xsts.model.derivedfeatures.XSTSDerivedFeatures.*
+import static extension hu.bme.mit.gamma.xsts.derivedfeatures.XSTSDerivedFeatures.*
 
 class ActionOptimizer {
+	// Singleton
+	public static final ActionOptimizer INSTANCE =  new ActionOptimizer
+	protected new() {}
 	// Auxiliary objects
-	protected final extension ReadWrittenVariableLocator locator = new ReadWrittenVariableLocator
+	protected final extension ReadWrittenVariableLocator locator = ReadWrittenVariableLocator.INSTANCE
 	protected final extension ExpressionUtil expressionUtil = ExpressionUtil.INSTANCE
 	protected final extension GammaEcoreUtil ecoreUtil = GammaEcoreUtil.INSTANCE
 	// Model factories
@@ -53,6 +56,7 @@ class ActionOptimizer {
 			newXStsAction.optimizeAssignmentActions
 			newXStsAction.deleteTrivialNonDeterministicActions
 			newXStsAction = newXStsAction.optimizeParallelActions // Might be resource intensive
+			newXStsAction.deleteUnnecessaryAssumeActions // Not correct in other transformation implementations
 		}
 		return newXStsAction
 	}
@@ -422,6 +426,31 @@ class ActionOptimizer {
 		for (xStsAction : action.actions.filter(CompositeAction)) {
 			xStsAction.optimizeAssignmentActions
 		}
+	}
+	
+	// Assume actions
+	
+	protected def void deleteUnnecessaryAssumeActions(Action action) {
+		for (assumeAction : action.getAllContentsOfType(AssumeAction)) {
+			if (assumeAction.isUnnecessary) {
+				assumeAction.delete
+			}
+		}
+	}
+	
+	/**
+	 * Note that this "unnecessary" definition comes from the characteristics of the Gamma transformation:
+	 * every assume action in a sequential action is placed at index 0. If this is not the case, then
+	 * it must come from a not thorough enough optimization (e.g., empty entry/exit action).
+	 * In other transformations this "unnecessary" definition might not hold.
+	 */
+	protected def isUnnecessary(AssumeAction action) {
+		val container = action.eContainer
+		if (container instanceof SequentialAction) {
+			val actions = container.actions
+			return actions.indexOf(action) != 0
+		}
+		return false
 	}
 	
 	// Non deterministic actions

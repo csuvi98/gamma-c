@@ -10,15 +10,15 @@
  ********************************************************************************/
 package hu.bme.mit.gamma.lowlevel.xsts.transformation
 
-import hu.bme.mit.gamma.xsts.model.model.Action
-import hu.bme.mit.gamma.xsts.model.model.XSTSModelFactory
-import hu.bme.mit.gamma.xsts.model.util.XSTSActionUtil
-import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine
 import hu.bme.mit.gamma.expression.model.ExpressionModelFactory
+import hu.bme.mit.gamma.xsts.model.Action
+import hu.bme.mit.gamma.xsts.model.XSTSModelFactory
+import hu.bme.mit.gamma.xsts.util.XSTSActionUtil
+import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine
 
 abstract class LowlevelTransitionToXTransitionTransformer {
 	// Auxiliary object
-	protected final extension ReadWrittenVariableLocator variableLocator = new ReadWrittenVariableLocator
+	protected final extension ReadWrittenVariableLocator variableLocator = ReadWrittenVariableLocator.INSTANCE
 	protected final extension LowlevelTransitionToActionTransformer lowlevelTransitionToActionTransformer
 	protected final extension XSTSActionUtil actionFactory
 	protected final extension StateAssumptionCreator stateAssumptionCreator

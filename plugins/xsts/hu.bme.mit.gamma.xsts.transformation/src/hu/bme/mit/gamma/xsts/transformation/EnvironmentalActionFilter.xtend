@@ -15,12 +15,12 @@ import hu.bme.mit.gamma.expression.util.ExpressionUtil
 import hu.bme.mit.gamma.statechart.interface_.Component
 import hu.bme.mit.gamma.statechart.interface_.Persistency
 import hu.bme.mit.gamma.util.GammaEcoreUtil
-import hu.bme.mit.gamma.xsts.model.model.Action
-import hu.bme.mit.gamma.xsts.model.model.AssignmentAction
-import hu.bme.mit.gamma.xsts.model.model.AssumeAction
-import hu.bme.mit.gamma.xsts.model.model.CompositeAction
-import hu.bme.mit.gamma.xsts.model.model.XSTSModelFactory
-import hu.bme.mit.gamma.xsts.model.util.XSTSActionUtil
+import hu.bme.mit.gamma.xsts.model.Action
+import hu.bme.mit.gamma.xsts.model.AssignmentAction
+import hu.bme.mit.gamma.xsts.model.AssumeAction
+import hu.bme.mit.gamma.xsts.model.CompositeAction
+import hu.bme.mit.gamma.xsts.model.XSTSModelFactory
+import hu.bme.mit.gamma.xsts.util.XSTSActionUtil
 import java.util.Set
 import org.eclipse.emf.ecore.util.EcoreUtil
 
@@ -28,9 +28,12 @@ import static hu.bme.mit.gamma.xsts.transformation.util.Namings.*
 
 import static extension hu.bme.mit.gamma.expression.derivedfeatures.ExpressionModelDerivedFeatures.*
 import static extension hu.bme.mit.gamma.statechart.derivedfeatures.StatechartModelDerivedFeatures.*
-import static extension hu.bme.mit.gamma.xsts.model.derivedfeatures.XSTSDerivedFeatures.*
+import static extension hu.bme.mit.gamma.xsts.derivedfeatures.XSTSDerivedFeatures.*
 
 class EnvironmentalActionFilter {
+	// Singleton
+	public static final EnvironmentalActionFilter INSTANCE =  new EnvironmentalActionFilter
+	protected new() {}
 	// Auxiliary objects
 	protected final extension ExpressionUtil expressionUtil = ExpressionUtil.INSTANCE
 	protected final extension ExpressionModelFactory expressionModelFactory = ExpressionModelFactory.eINSTANCE

@@ -40,7 +40,7 @@ import hu.bme.mit.gamma.statechart.statechart.StatechartDefinition;
 import hu.bme.mit.gamma.util.GammaEcoreUtil;
 import hu.bme.mit.gamma.xsts.codegeneration.java.CommonizedVariableActionSerializer;
 import hu.bme.mit.gamma.xsts.codegeneration.java.StatechartToJavaCodeGenerator;
-import hu.bme.mit.gamma.xsts.model.model.XSTS;
+import hu.bme.mit.gamma.xsts.model.XSTS;
 
 public class CommandHandler extends AbstractHandler {
 
@@ -107,7 +107,7 @@ public class CommandHandler extends AbstractHandler {
 		logger.log(Level.INFO, "The Gamma low level - xSTS transformation has been finished.");
 		logger.log(Level.INFO, "Starting xSTS serialization.");
 		// Serializing the xSTS
-		ActionSerializer actionSerializer = new ActionSerializer();
+		ActionSerializer actionSerializer = ActionSerializer.INSTANCE;
 		CharSequence xStsString = actionSerializer.serializeXSTS(xSts);
 		System.out.println(xStsString);
 		logger.log(Level.INFO, "Starting xSTS Java code generation.");

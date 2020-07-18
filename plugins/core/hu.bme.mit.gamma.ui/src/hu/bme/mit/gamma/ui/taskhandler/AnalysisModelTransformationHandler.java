@@ -33,15 +33,16 @@ import hu.bme.mit.gamma.genmodel.model.InteractionCoverage;
 import hu.bme.mit.gamma.genmodel.model.OutEventCoverage;
 import hu.bme.mit.gamma.genmodel.model.StateCoverage;
 import hu.bme.mit.gamma.genmodel.model.TransitionCoverage;
-import hu.bme.mit.gamma.statechart.interface_.Package;
-import hu.bme.mit.gamma.statechart.interface_.TimeSpecification;
 import hu.bme.mit.gamma.statechart.composite.AsynchronousAdapter;
 import hu.bme.mit.gamma.statechart.composite.AsynchronousComponentInstance;
-import hu.bme.mit.gamma.statechart.interface_.Component;
-import hu.bme.mit.gamma.statechart.composite.ComponentInstance;
+import hu.bme.mit.gamma.statechart.composite.ComponentInstanceReference;
 import hu.bme.mit.gamma.statechart.composite.SynchronousComponentInstance;
 import hu.bme.mit.gamma.statechart.derivedfeatures.StatechartModelDerivedFeatures;
+import hu.bme.mit.gamma.statechart.interface_.Component;
+import hu.bme.mit.gamma.statechart.interface_.Package;
+import hu.bme.mit.gamma.statechart.interface_.TimeSpecification;
 import hu.bme.mit.gamma.statechart.util.StatechartUtil;
+import hu.bme.mit.gamma.transformation.util.SimpleInstanceHandler;
 import hu.bme.mit.gamma.uppaal.composition.transformation.AsynchronousInstanceConstraint;
 import hu.bme.mit.gamma.uppaal.composition.transformation.AsynchronousSchedulerTemplateCreator.Scheduler;
 import hu.bme.mit.gamma.uppaal.composition.transformation.CompositeToUppaalTransformer;
@@ -49,7 +50,6 @@ import hu.bme.mit.gamma.uppaal.composition.transformation.Constraint;
 import hu.bme.mit.gamma.uppaal.composition.transformation.ModelModifierForTestGeneration.InteractionRepresentation;
 import hu.bme.mit.gamma.uppaal.composition.transformation.OrchestratingConstraint;
 import hu.bme.mit.gamma.uppaal.composition.transformation.SchedulingConstraint;
-import hu.bme.mit.gamma.uppaal.composition.transformation.SimpleInstanceHandler;
 import hu.bme.mit.gamma.uppaal.composition.transformation.TestQueryGenerationHandler;
 import hu.bme.mit.gamma.uppaal.composition.transformation.api.util.UppaalModelPreprocessor;
 import hu.bme.mit.gamma.uppaal.serializer.UppaalModelSerializer;
@@ -107,7 +107,7 @@ public class AnalysisModelTransformationHandler extends TaskHandler {
 			// Unfolding the given system
 			Component component = analysisModelTransformation.getComponent();
 			Package gammaPackage = StatechartModelDerivedFeatures.getContainingPackage(component);
-			UppaalModelPreprocessor preprocessor = new UppaalModelPreprocessor();
+			UppaalModelPreprocessor preprocessor = UppaalModelPreprocessor.INSTANCE;
 			Component newTopComponent = preprocessor.preprocess(gammaPackage, analysisModelTransformation.getArguments(),
 				new File(targetFolderUri + File.separator + analysisModelTransformation.getFileName().get(0) + ".gcd"));
 			Package newPackage = StatechartModelDerivedFeatures.getContainingPackage(newTopComponent);
@@ -171,15 +171,11 @@ public class AnalysisModelTransformationHandler extends TaskHandler {
 		
 		private List<SynchronousComponentInstance> getIncludedSynchronousInstances(Component component,
 				Optional<Coverage> coverage) {
-			SimpleInstanceHandler simpleInstanceHandler = new SimpleInstanceHandler();
+			SimpleInstanceHandler simpleInstanceHandler = SimpleInstanceHandler.INSTANCE;
 			if (coverage.isPresent()) {
 				Coverage presentCoverage = coverage.get();
-				List<? extends ComponentInstance> includedComponents = presentCoverage.getInclude();
-				if (includedComponents.isEmpty()) {
-					// If there is no include in the coverage, it means all instances need to be tested
-					includedComponents = simpleInstanceHandler.getNewSimpleInstances(component);
-				}
-				return simpleInstanceHandler.getNewSimpleInstances(includedComponents, presentCoverage.getExclude(), component);
+				return simpleInstanceHandler.getNewSimpleInstances(presentCoverage.getInclude(),
+					presentCoverage.getExclude(), component);
 			}
 			return Collections.emptyList();
 		}
@@ -211,9 +207,9 @@ public class AnalysisModelTransformationHandler extends TaskHandler {
 					(OrchestratingConstraint) transformConstraint(asynchronousInstanceConstraint.getOrchestratingConstraint(), newComponent)));
 			}
 			// Asynchronous composite components
-			SimpleInstanceHandler instanceHandler = new SimpleInstanceHandler();
+			SimpleInstanceHandler instanceHandler = SimpleInstanceHandler.INSTANCE;
 			List<AsynchronousInstanceConstraint> asynchronousInstanceConstraints = new ArrayList<AsynchronousInstanceConstraint>();
-			AsynchronousComponentInstance originalInstance = asynchronousInstanceConstraint.getInstance();
+			ComponentInstanceReference originalInstance = asynchronousInstanceConstraint.getInstance();
 			List<AsynchronousComponentInstance> newAsynchronousSimpleInstances = instanceHandler
 					.getNewAsynchronousSimpleInstances(originalInstance, newComponent);
 			for (AsynchronousComponentInstance newAsynchronousSimpleInstance : newAsynchronousSimpleInstances) {

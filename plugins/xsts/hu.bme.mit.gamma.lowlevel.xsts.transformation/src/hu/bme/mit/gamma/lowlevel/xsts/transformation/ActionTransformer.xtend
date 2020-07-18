@@ -19,9 +19,9 @@ import hu.bme.mit.gamma.action.model.ForStatement
 import hu.bme.mit.gamma.action.model.IfStatement
 import hu.bme.mit.gamma.action.model.SwitchStatement
 import hu.bme.mit.gamma.expression.model.ReferenceExpression
-import hu.bme.mit.gamma.xsts.model.model.Action
-import hu.bme.mit.gamma.xsts.model.model.XSTSModelFactory
-import hu.bme.mit.gamma.xsts.model.util.XSTSActionUtil
+import hu.bme.mit.gamma.xsts.model.Action
+import hu.bme.mit.gamma.xsts.model.XSTSModelFactory
+import hu.bme.mit.gamma.xsts.util.XSTSActionUtil
 import java.util.Collection
 
 class ActionTransformer {

@@ -49,13 +49,13 @@ import hu.bme.mit.gamma.statechart.lowlevel.model.Persistency
 import hu.bme.mit.gamma.statechart.lowlevel.model.Region
 import hu.bme.mit.gamma.statechart.lowlevel.model.State
 import hu.bme.mit.gamma.statechart.lowlevel.model.StatechartDefinition
-import hu.bme.mit.gamma.xsts.model.model.CompositeAction
-import hu.bme.mit.gamma.xsts.model.model.NonDeterministicAction
-import hu.bme.mit.gamma.xsts.model.model.SequentialAction
-import hu.bme.mit.gamma.xsts.model.model.VariableGroup
-import hu.bme.mit.gamma.xsts.model.model.XSTS
-import hu.bme.mit.gamma.xsts.model.model.XSTSModelFactory
-import hu.bme.mit.gamma.xsts.model.util.XSTSActionUtil
+import hu.bme.mit.gamma.xsts.model.CompositeAction
+import hu.bme.mit.gamma.xsts.model.NonDeterministicAction
+import hu.bme.mit.gamma.xsts.model.SequentialAction
+import hu.bme.mit.gamma.xsts.model.VariableGroup
+import hu.bme.mit.gamma.xsts.model.XSTS
+import hu.bme.mit.gamma.xsts.model.XSTSModelFactory
+import hu.bme.mit.gamma.xsts.util.XSTSActionUtil
 import java.util.AbstractMap.SimpleEntry
 import java.util.Set
 import org.eclipse.viatra.query.runtime.api.ViatraQueryEngine
@@ -68,7 +68,7 @@ import org.eclipse.viatra.transformation.runtime.emf.transformation.batch.BatchT
 import static com.google.common.base.Preconditions.checkArgument
 import static com.google.common.base.Preconditions.checkState
 
-import static extension hu.bme.mit.gamma.statechart.lowlevel.model.derivedfeatures.LowlevelStatechartModelDerivedFeatures.*
+import static extension hu.bme.mit.gamma.statechart.lowlevel.derivedfeatures.LowlevelStatechartModelDerivedFeatures.*
 import static extension hu.bme.mit.gamma.xsts.transformation.util.Namings.*
 
 class LowlevelToXSTSTransformer {
@@ -80,9 +80,9 @@ class LowlevelToXSTSTransformer {
 	// Auxiliary objects
 	protected final extension XSTSActionUtil actionFactory = XSTSActionUtil.INSTANCE
 	protected final extension ExpressionUtil expressionUtil = ExpressionUtil.INSTANCE
-	protected final extension ReadWrittenVariableLocator variableLocator = new ReadWrittenVariableLocator
-	protected final extension ActionOptimizer actionSimplifier = new ActionOptimizer
-	protected final extension VariableGroupRetriever variableGroupRetriever = new VariableGroupRetriever
+	protected final extension ReadWrittenVariableLocator variableLocator = ReadWrittenVariableLocator.INSTANCE
+	protected final extension ActionOptimizer actionSimplifier = ActionOptimizer.INSTANCE
+	protected final extension VariableGroupRetriever variableGroupRetriever = VariableGroupRetriever.INSTANCE
 	protected final extension PseudoStateHandler pseudoStateHandler
 	protected final extension RegionActivator regionActivator
 	protected final extension EntryActionRetriever entryActionRetriever

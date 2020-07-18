@@ -32,8 +32,11 @@ import static com.google.common.base.Preconditions.checkState
 import static extension hu.bme.mit.gamma.statechart.derivedfeatures.StatechartModelDerivedFeatures.*
 
 class AnalysisModelPreprocessor {
-	
-	protected val logger = Logger.getLogger("GammaLogger")
+	// Singleton
+	public static final AnalysisModelPreprocessor INSTANCE =  new AnalysisModelPreprocessor
+	protected new() {}
+	//
+	protected final Logger logger = Logger.getLogger("GammaLogger")
 	protected final extension StatechartUtil statechartUtil = StatechartUtil.INSTANCE
 	protected final extension GammaEcoreUtil ecoreUtil = GammaEcoreUtil.INSTANCE
 	protected final extension ExpressionModelFactory expressionModelFactory = ExpressionModelFactory.eINSTANCE
@@ -76,8 +79,10 @@ class AnalysisModelPreprocessor {
 	def transformParameters(Component component, List<Expression> topComponentArguments) {
 		val _package = component.containingPackage
 		val parameters = component.parameterDeclarations
-		checkState(parameters.size == topComponentArguments.size)
-		for (var i = 0; i < parameters.size; i++) {
+		logger.log(Level.INFO, "Argument size: " + topComponentArguments.size + " - parameter size: " + parameters.size)
+		checkState(topComponentArguments.size <= parameters.size)
+		// For code generation, not all (actually zero) parameters have to be bound
+		for (var i = 0; i < topComponentArguments.size; i++) {
 			val parameter = parameters.get(i)
 			val argument = topComponentArguments.get(i).clone(true, true)
 			logger.log(Level.INFO, "Saving top component argument " + argument + " for " + parameter.name)

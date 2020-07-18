@@ -5,7 +5,7 @@
     modelName="Genmodel" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="8.0" copyrightFields="false"
     editPluginID="hu.bme.mit.gamma.genmodel.model.edit" editorPluginID="hu.bme.mit.gamma.genmodel.model.editor"
-    usedGenPackages="../../hu.bme.mit.gamma.action.model/model/action.genmodel#//model ../../org.yakindu.base.types/model/base.genmodel#//base ../../hu.bme.mit.gamma.expression.model/model/expression.genmodel#//model ../../org.yakindu.sct.model.sgraph/model/emf/sgraph.genmodel#//sgraph ../../hu.bme.mit.gamma.statechart.model/model/statechart.genmodel#//composite ../../hu.bme.mit.gamma.statechart.model/model/statechart.genmodel#//interface ../../hu.bme.mit.gamma.statechart.model/model/statechart.genmodel#//statechart ../../org.yakindu.sct.model.stext/model/SText.genmodel#//stext ../../hu.bme.mit.gamma.trace.model/model/trace.genmodel#//model ../../org.yakindu.base.types/model/types.genmodel#//types"
+    usedGenPackages="../../hu.bme.mit.gamma.action.model/model/action.genmodel#//model ../../org.yakindu.base.types/model/base.genmodel#//base ../../hu.bme.mit.gamma.expression.model/model/expression.genmodel#//model ../../hu.bme.mit.gamma.property.model/model/property.genmodel#//model ../../org.yakindu.sct.model.sgraph/model/emf/sgraph.genmodel#//sgraph ../../hu.bme.mit.gamma.statechart.model/model/statechart.genmodel#//composite ../../hu.bme.mit.gamma.statechart.model/model/statechart.genmodel#//interface ../../hu.bme.mit.gamma.statechart.model/model/statechart.genmodel#//statechart ../../org.yakindu.sct.model.stext/model/SText.genmodel#//stext ../../hu.bme.mit.gamma.trace.model/model/trace.genmodel#//model ../../org.yakindu.base.types/model/types.genmodel#//types"
     operationReflection="true" importOrganizing="true">
   <foreignModel>genmodel.ecore</foreignModel>
   <genPackages prefix="GenmodelModel" basePackage="hu.bme.mit.gamma.genmodel" disposableProviderFactory="true"
@@ -72,8 +72,8 @@
     <genClasses ecoreClass="genmodel.ecore#//TransitionCoverage"/>
     <genClasses ecoreClass="genmodel.ecore#//StateCoverage"/>
     <genClasses ecoreClass="genmodel.ecore#//Coverage">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference genmodel.ecore#//Coverage/include"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference genmodel.ecore#//Coverage/exclude"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference genmodel.ecore#//Coverage/include"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference genmodel.ecore#//Coverage/exclude"/>
     </genClasses>
     <genClasses ecoreClass="genmodel.ecore#//EventPriorityTransformation">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference genmodel.ecore#//EventPriorityTransformation/statechart"/>
@@ -92,7 +92,7 @@
     </genClasses>
     <genClasses ecoreClass="genmodel.ecore#//AsynchronousInstanceConstraint">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference genmodel.ecore#//AsynchronousInstanceConstraint/orchestratingConstraint"/>
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference genmodel.ecore#//AsynchronousInstanceConstraint/instance"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference genmodel.ecore#//AsynchronousInstanceConstraint/instance"/>
     </genClasses>
     <genClasses ecoreClass="genmodel.ecore#//AbstractCodeGeneration">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute genmodel.ecore#//AbstractCodeGeneration/packageName"/>
@@ -107,6 +107,7 @@
     <genClasses ecoreClass="genmodel.ecore#//Verification">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute genmodel.ecore#//Verification/languages"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute genmodel.ecore#//Verification/queryFiles"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference genmodel.ecore#//Verification/propertyPackages"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute genmodel.ecore#//Verification/testFolder"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute genmodel.ecore#//Verification/optimize"/>
     </genClasses>

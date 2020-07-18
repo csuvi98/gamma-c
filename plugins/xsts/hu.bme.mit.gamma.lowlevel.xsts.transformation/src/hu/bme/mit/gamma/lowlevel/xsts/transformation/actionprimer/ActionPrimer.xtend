@@ -20,15 +20,15 @@ import hu.bme.mit.gamma.expression.model.ReferenceExpression
 import hu.bme.mit.gamma.expression.model.UnaryExpression
 import hu.bme.mit.gamma.expression.model.VariableDeclaration
 import hu.bme.mit.gamma.expression.util.ExpressionUtil
-import hu.bme.mit.gamma.xsts.model.model.Action
-import hu.bme.mit.gamma.xsts.model.model.AssignmentAction
-import hu.bme.mit.gamma.xsts.model.model.AssumeAction
-import hu.bme.mit.gamma.xsts.model.model.CompositeAction
-import hu.bme.mit.gamma.xsts.model.model.PrimedVariable
-import hu.bme.mit.gamma.xsts.model.model.SequentialAction
-import hu.bme.mit.gamma.xsts.model.model.XSTS
-import hu.bme.mit.gamma.xsts.model.model.XSTSModelFactory
-import hu.bme.mit.gamma.xsts.model.util.XSTSActionUtil
+import hu.bme.mit.gamma.xsts.model.Action
+import hu.bme.mit.gamma.xsts.model.AssignmentAction
+import hu.bme.mit.gamma.xsts.model.AssumeAction
+import hu.bme.mit.gamma.xsts.model.CompositeAction
+import hu.bme.mit.gamma.xsts.model.PrimedVariable
+import hu.bme.mit.gamma.xsts.model.SequentialAction
+import hu.bme.mit.gamma.xsts.model.XSTS
+import hu.bme.mit.gamma.xsts.model.XSTSModelFactory
+import hu.bme.mit.gamma.xsts.util.XSTSActionUtil
 import java.util.List
 import java.util.Map
 import org.eclipse.emf.ecore.EObject
@@ -36,7 +36,7 @@ import org.eclipse.emf.ecore.util.EcoreUtil.Copier
 
 import static com.google.common.base.Preconditions.checkState
 
-import static extension hu.bme.mit.gamma.xsts.model.derivedfeatures.XSTSDerivedFeatures.*
+import static extension hu.bme.mit.gamma.xsts.derivedfeatures.XSTSDerivedFeatures.*
 
 abstract class ActionPrimer {
 	// Auxiliary objects

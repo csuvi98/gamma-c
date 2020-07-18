@@ -10,21 +10,24 @@
  ********************************************************************************/
 package hu.bme.mit.gamma.lowlevel.xsts.transformation.serializer
 
-import hu.bme.mit.gamma.xsts.model.model.AssignmentAction
-import hu.bme.mit.gamma.xsts.model.model.AssumeAction
-import hu.bme.mit.gamma.xsts.model.model.EmptyAction
-import hu.bme.mit.gamma.xsts.model.model.NonDeterministicAction
-import hu.bme.mit.gamma.xsts.model.model.OrthogonalAction
-import hu.bme.mit.gamma.xsts.model.model.ParallelAction
-import hu.bme.mit.gamma.xsts.model.model.SequentialAction
-import hu.bme.mit.gamma.xsts.model.model.XSTS
+import hu.bme.mit.gamma.xsts.model.AssignmentAction
+import hu.bme.mit.gamma.xsts.model.AssumeAction
+import hu.bme.mit.gamma.xsts.model.EmptyAction
+import hu.bme.mit.gamma.xsts.model.NonDeterministicAction
+import hu.bme.mit.gamma.xsts.model.OrthogonalAction
+import hu.bme.mit.gamma.xsts.model.ParallelAction
+import hu.bme.mit.gamma.xsts.model.SequentialAction
+import hu.bme.mit.gamma.xsts.model.XSTS
 
-import static extension hu.bme.mit.gamma.xsts.model.derivedfeatures.XSTSDerivedFeatures.*
+import static extension hu.bme.mit.gamma.xsts.derivedfeatures.XSTSDerivedFeatures.*
 
 class ActionSerializer {
+	// Singleton
+	public static final ActionSerializer INSTANCE = new ActionSerializer
+	protected new() {}
 	// Auxiliary objects
-	protected final extension DeclarationSerializer declarationSerializer = new DeclarationSerializer
-	protected final extension ExpressionSerializer expressionSerializer = new ExpressionSerializer
+	protected final extension DeclarationSerializer declarationSerializer = DeclarationSerializer.INSTANCE
+	protected final extension ExpressionSerializer expressionSerializer = ExpressionSerializer.INSTANCE
 		
 	def serializeXSTS(XSTS xSts) '''
 		«xSts.serializeDeclarations(false)»

@@ -3,8 +3,8 @@ package hu.bme.mit.gamma.uppaal.composition.transformation.api.util
 import hu.bme.mit.gamma.expression.model.Expression
 import hu.bme.mit.gamma.statechart.interface_.Component
 import hu.bme.mit.gamma.statechart.interface_.Package
+import hu.bme.mit.gamma.transformation.util.SimpleInstanceHandler
 import hu.bme.mit.gamma.uppaal.composition.transformation.CompositeToUppaalTransformer
-import hu.bme.mit.gamma.uppaal.composition.transformation.SimpleInstanceHandler
 import hu.bme.mit.gamma.uppaal.composition.transformation.TestQueryGenerationHandler
 import hu.bme.mit.gamma.uppaal.serializer.UppaalModelSerializer
 import hu.bme.mit.gamma.uppaal.transformation.ModelValidator
@@ -60,8 +60,7 @@ class DefaultCompositionToUppaalTransformer {
 		// Deleting old q file
 		val queryFileName = fileNameExtensionless + ".q"
 		new File(parentFolder + File.separator + queryFileName).delete
-		UppaalModelSerializer.saveString(parentFolder, queryFileName,
-				testQueryGenerationHandler.getQueries(coverage))
+		UppaalModelSerializer.saveString(parentFolder, queryFileName, testQueryGenerationHandler.getQueries(coverage))
 		transformer.dispose
 		modelPreprocessor.logger.log(Level.INFO, "The composite system transformation has been finished.")
 		return new SimpleEntry(trace,
@@ -77,7 +76,7 @@ class DefaultCompositionToUppaalTransformer {
 	}
 	
 	private def getCoverableInstances(Component component, ElementCoverage expected, Collection<ElementCoverage> received) {
-		val instanceHandler = new SimpleInstanceHandler
+		val instanceHandler = SimpleInstanceHandler.INSTANCE
 		val components = newHashSet
 		if (received.contains(expected)) {
 			components += instanceHandler.getNewSimpleInstances(component)

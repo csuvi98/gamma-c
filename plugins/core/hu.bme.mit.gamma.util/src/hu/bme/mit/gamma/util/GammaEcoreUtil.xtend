@@ -7,6 +7,7 @@ import org.eclipse.core.resources.ResourcesPlugin
 import org.eclipse.core.runtime.Path
 import org.eclipse.emf.common.util.URI
 import org.eclipse.emf.ecore.EObject
+import org.eclipse.emf.ecore.EReference
 import org.eclipse.emf.ecore.resource.Resource
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
@@ -69,6 +70,46 @@ class GammaEcoreUtil {
 	def void changeAllAndDelete(EObject newObject, EObject oldObject, EObject container) {
 		changeAll(newObject, oldObject, container)
 		oldObject.delete
+	}
+	
+	def void add(EObject container, EReference reference, EObject object) {
+		val referenceObject = container.eGet(reference)
+		if (referenceObject instanceof List) {
+			referenceObject += object
+		}
+		else {
+			container.eSet(reference, object)
+		}
+	}
+	
+	def <T extends EObject> T getSelfOrContainerOfType(EObject object, Class<T> type) {
+		if (type.isInstance(object)) {
+			return object as T
+		}
+		return object.getContainerOfType(type)
+	}
+	
+	def <T extends EObject> T getContainerOfType(EObject object, Class<T> type) {
+		val container = object.eContainer
+		if (container === null) {
+			return null
+		}
+		if (type.isInstance(container)) {
+			return container as T
+		}
+		return container.getContainerOfType(type)
+	}
+	
+	def <T extends EObject> List<T> getAllContentsOfType(EObject object, Class<T> type) {
+		val contents = <T>newArrayList
+		val iterator = object.eAllContents
+		while (iterator.hasNext) {
+			val content = iterator.next
+			if (type.isInstance(content)) {
+				contents += content as T
+			}
+		}
+		return contents
 	}
 
 	def EObject normalLoad(URI uri) {

@@ -76,6 +76,7 @@ import hu.bme.mit.gamma.uppaal.transformation.queries.UpdatesOfTransitions
 import hu.bme.mit.gamma.uppaal.transformation.traceability.G2UTrace
 import hu.bme.mit.gamma.uppaal.transformation.traceability.TraceabilityFactory
 import hu.bme.mit.gamma.uppaal.transformation.traceability.TraceabilityPackage
+import hu.bme.mit.gamma.uppaal.util.NtaBuilder
 import hu.bme.mit.gamma.util.GammaEcoreUtil
 import java.util.AbstractMap.SimpleEntry
 import java.util.Collection
@@ -92,7 +93,6 @@ import org.eclipse.viatra.transformation.runtime.emf.rules.batch.BatchTransforma
 import org.eclipse.viatra.transformation.runtime.emf.transformation.batch.BatchTransformation
 import org.eclipse.viatra.transformation.runtime.emf.transformation.batch.BatchTransformationStatements
 import uppaal.NTA
-import uppaal.UppaalFactory
 import uppaal.UppaalPackage
 import uppaal.declarations.ChannelVariableDeclaration
 import uppaal.declarations.ClockVariableDeclaration
@@ -104,7 +104,6 @@ import uppaal.declarations.ExpressionInitializer
 import uppaal.declarations.Function
 import uppaal.declarations.FunctionDeclaration
 import uppaal.declarations.LocalDeclarations
-import uppaal.declarations.SystemDeclarations
 import uppaal.declarations.TypeDeclaration
 import uppaal.declarations.VariableDeclaration
 import uppaal.declarations.system.InstantiationList
@@ -130,9 +129,7 @@ import uppaal.templates.LocationKind
 import uppaal.templates.SynchronizationKind
 import uppaal.templates.Template
 import uppaal.templates.TemplatesPackage
-import uppaal.types.BuiltInType
 import uppaal.types.DeclaredType
-import uppaal.types.PredefinedType
 import uppaal.types.StructTypeSpecification
 import uppaal.types.TypeReference
 import uppaal.types.TypesPackage
@@ -198,10 +195,9 @@ class CompositeToUppaalTransformer {
 	protected extension CompareExpressionCreator compareExpressionCreator
 	protected extension AsynchronousComponentHelper asynchronousComponentHelper
 	protected extension AssignmentExpressionCreator assignmentExpressionCreator
-	protected final extension SimpleInstanceHandler simpleInstanceHandler = new SimpleInstanceHandler
     protected final extension ExpressionUtil expressionUtil = ExpressionUtil.INSTANCE
     protected final extension GammaEcoreUtil ecoreUtil = GammaEcoreUtil.INSTANCE
-    protected final extension InPlaceExpressionTransformer inPlaceExpressionTransformer = new InPlaceExpressionTransformer
+    protected final extension InPlaceExpressionTransformer inPlaceExpressionTransformer = InPlaceExpressionTransformer.INSTANCE
 	// Auxiliary transformer objects
 	protected AsynchronousConstantsCreator asynchronousConstantsCreator
 	protected SynchronousChannelCreatorOfAsynchronousInstances synchronousChannelCreatorOfAsynchronousInstances
@@ -235,9 +231,8 @@ class CompositeToUppaalTransformer {
 		checkState(resourceSet !== null, "The given component is not contained by a resource set")
 		this.resources = resourceSet
 		this.component = component
-		this.target = UppaalFactory.eINSTANCE.createNTA => [
-			it.name = component.name
-		]
+		this.ntaBuilder = new NtaBuilder(component.name, this.isMinimalElementSet)
+		this.target = ntaBuilder.nta
 		// Connecting the two models in trace
 		this.traceRoot = TraceabilityFactory.eINSTANCE.createG2UTrace => [
 			it.gammaPackage = this.sourceRoot
@@ -250,8 +245,6 @@ class CompositeToUppaalTransformer {
 		this.transformation = BatchTransformation.forEngine(engine).build
 		this.statements = transformation.transformationStatements
 		// Creating UPPAAL variable and type structures as multiple auxiliary transformers need them
-		initNta
-		this.ntaBuilder = new NtaBuilder(this.target, this.manipulation, this.isMinimalElementSet)
 		createMessageStructType
 		createIsStableVar
 		// Trace
@@ -262,8 +255,7 @@ class CompositeToUppaalTransformer {
 		this.expressionCopier = new ExpressionCopier(this.manipulation, this.traceModel)
 		this.expressionEvaluator = new ExpressionEvaluator(this.engine)
 		this.variableTransformer = new VariableTransformer(this.ntaBuilder, this.manipulation, this.traceModel)
-		this.assignmentExpressionCreator = new AssignmentExpressionCreator(this.ntaBuilder, 
-			this.manipulation, this.expressionTransformer)
+		this.assignmentExpressionCreator = new AssignmentExpressionCreator(this.ntaBuilder, this.expressionTransformer)
 		this.compareExpressionCreator = new CompareExpressionCreator(this.ntaBuilder, this.manipulation,
 			this.expressionTransformer, this.traceModel)
 		this.asynchronousComponentHelper = new AsynchronousComponentHelper(this.component, this.engine,
@@ -374,37 +366,6 @@ class CompositeToUppaalTransformer {
 		return new SimpleEntry<NTA, G2UTrace>(target, traceRoot)
 	}
 	
-	/**
-	 * This method is responsible for the initialization of the NTA.
-	 * It creates the global and system declaration collections and the predefined types.
-	 */
-	private def initNta() {
-		target.createChild(getNTA_GlobalDeclarations, globalDeclarations)
-		target.createChild(getNTA_SystemDeclarations, systemDeclarations) as SystemDeclarations => [
-			it.createChild(systemDeclarations_System, sysPackage.system)
-		]
-		target.createChild(getNTA_Int, predefinedType) as PredefinedType => [
-			it.name = "integer"
-			it.type = BuiltInType.INT
-		]
-		target.createChild(getNTA_Bool, predefinedType) as PredefinedType => [
-			it.name = "boolean"
-			it.type = BuiltInType.BOOL
-		]
-		target.createChild(getNTA_Void, predefinedType) as PredefinedType => [
-			it.name = "void"
-			it.type = BuiltInType.VOID
-		]
-		target.createChild(getNTA_Clock, predefinedType) as PredefinedType => [
-			it.name = "clock"
-			it.type = BuiltInType.CLOCK
-		]
-		target.createChild(getNTA_Chan, predefinedType) as PredefinedType => [
-			it.name = "channel"
-			it.type = BuiltInType.CHAN
-		]
-	}
-	
 	private def createMessageStructType() {
 		if (component instanceof AsynchronousComponent) {
 			val messageTypeDecl = target.globalDeclarations.createChild(declarations_Declaration, typeDeclaration) as TypeDeclaration
@@ -458,7 +419,8 @@ class CompositeToUppaalTransformer {
 							val lhs = lastTempVal
 							val tempVar = it.declarations.createVariable(DataVariablePrefix.NONE, target.bool,  "tempVar" + tempId++)
 							it.createChild(block_Statement, expressionStatement) as ExpressionStatement => [
-								it.createAssignmentLogicalExpression(expressionStatement_Expression, tempVar, lhs, match.event.getToRaiseVariable(match.port, match.instance))
+								it.createAssignmentLogicalExpression(expressionStatement_Expression, tempVar, lhs,
+									LogicalOperator.OR, match.event.getToRaiseVariable(match.port, match.instance))
 							]
 							lastTempVal = tempVar
 						}
@@ -1484,7 +1446,7 @@ class CompositeToUppaalTransformer {
 			val expression = expressions.get(i)
 			val parameter = toRaiseEvent.parameterDeclarations.get(i)
 			val assignment = edge.createAssignmentExpression(edge_Update,
-				toRaiseEvent.getToRaiseValueOfVariable(port, parameter, inInstance), expression, inInstance)
+				toRaiseEvent.getToRaiseValueOfVariable(port, parameter, inInstance), expression)
 			addToTrace(eventAction, #{assignment}, expressionTrace)
 		}			
 	}

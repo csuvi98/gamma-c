@@ -10,10 +10,67 @@
  ********************************************************************************/
 package hu.bme.mit.gamma.property.util;
 
-public class PropertyUtil {
+import hu.bme.mit.gamma.expression.model.Expression;
+import hu.bme.mit.gamma.expression.util.ExpressionUtil;
+import hu.bme.mit.gamma.property.model.AtomicFormula;
+import hu.bme.mit.gamma.property.model.BinaryLogicalOperator;
+import hu.bme.mit.gamma.property.model.BinaryOperandLogicalPathFormula;
+import hu.bme.mit.gamma.property.model.PathFormula;
+import hu.bme.mit.gamma.property.model.PathQuantifier;
+import hu.bme.mit.gamma.property.model.PropertyModelFactory;
+import hu.bme.mit.gamma.property.model.QuantifiedFormula;
+import hu.bme.mit.gamma.property.model.StateFormula;
+import hu.bme.mit.gamma.property.model.UnaryOperandPathFormula;
+import hu.bme.mit.gamma.property.model.UnaryPathOperator;
+
+public class PropertyUtil extends ExpressionUtil {
 	// Singleton
 	public static final PropertyUtil INSTANCE = new PropertyUtil();
 	protected PropertyUtil() {}
 	//
+	protected PropertyModelFactory factory = PropertyModelFactory.eINSTANCE;
+	
+	public AtomicFormula createAtomicFormula(Expression expression) {
+		AtomicFormula atomicFormula = factory.createAtomicFormula();
+		atomicFormula.setExpression(expression);
+		return atomicFormula;
+	}
+	
+	public StateFormula createSimpleCTLFormula(PathQuantifier pathQuantifier,
+			UnaryPathOperator unaryPathOperator, PathFormula formula) {
+		QuantifiedFormula quantifiedFormula = factory.createQuantifiedFormula();
+		quantifiedFormula.setQuantifier(pathQuantifier);
+		UnaryOperandPathFormula pathFormula = factory.createUnaryOperandPathFormula();
+		pathFormula.setOperator(unaryPathOperator);
+		quantifiedFormula.setFormula(pathFormula);
+		pathFormula.setOperand(formula);
+		return quantifiedFormula;
+	}
+	
+	public StateFormula createEF(PathFormula formula) {
+		return createSimpleCTLFormula(PathQuantifier.EXISTS, UnaryPathOperator.FUTURE, formula);
+	}
+	
+	public StateFormula createEG(PathFormula formula) {
+		return createSimpleCTLFormula(PathQuantifier.EXISTS, UnaryPathOperator.GLOBAL, formula);
+	}
+	
+	public StateFormula createAF(PathFormula formula) {
+		return createSimpleCTLFormula(PathQuantifier.FORALL, UnaryPathOperator.FUTURE, formula);
+	}
+	
+	public StateFormula createAG(PathFormula formula) {
+		return createSimpleCTLFormula(PathQuantifier.FORALL, UnaryPathOperator.GLOBAL, formula);
+	}
+	
+	public StateFormula createLeadsTo(PathFormula lhs, PathFormula rhs) {
+		BinaryOperandLogicalPathFormula imply = factory.createBinaryOperandLogicalPathFormula();
+		imply.setOperator(BinaryLogicalOperator.IMPLY);
+		imply.setLeftOperand(lhs);
+		StateFormula AF = createAF(rhs);
+		imply.setRightOperand(AF);
+		StateFormula AG = createAG(imply);
+		return AG;
+	}
 	
 }

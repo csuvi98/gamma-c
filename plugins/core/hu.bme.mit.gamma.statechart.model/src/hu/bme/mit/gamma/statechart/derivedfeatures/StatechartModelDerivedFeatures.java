@@ -247,6 +247,28 @@ public class StatechartModelDerivedFeatures extends ExpressionModelDerivedFeatur
 		return asynchronousInstances;
 	}
 	
+	public static List<ComponentInstance> getInstances(Component component) {
+		List<ComponentInstance> instances = new ArrayList<ComponentInstance>();
+		if (component instanceof AsynchronousCompositeComponent) {
+			AsynchronousCompositeComponent asynchronousCompositeComponent = (AsynchronousCompositeComponent) component;
+			for (AsynchronousComponentInstance instance : asynchronousCompositeComponent.getComponents()) {
+				instances.add(instance);
+			}
+		}
+		else if (component instanceof AsynchronousAdapter) {
+			AsynchronousAdapter asynchronousAdapter = (AsynchronousAdapter) component;
+			SynchronousComponentInstance wrappedComponent = asynchronousAdapter.getWrappedComponent();
+			instances.add(wrappedComponent);
+		}
+		else if (component instanceof AbstractSynchronousCompositeComponent) {
+			AbstractSynchronousCompositeComponent synchronousCompositeComponent = (AbstractSynchronousCompositeComponent) component;
+			for (SynchronousComponentInstance instance : synchronousCompositeComponent.getComponents()) {
+				instances.add(instance);
+			}
+		}
+		return instances;
+	}
+	
 	public static List<ComponentInstance> getAllInstances(Component component) {
 		List<ComponentInstance> instances = new ArrayList<ComponentInstance>();
 		if (component instanceof AsynchronousCompositeComponent) {
@@ -294,6 +316,12 @@ public class StatechartModelDerivedFeatures extends ExpressionModelDerivedFeatur
 		return getAllEventDeclarations(_interface).stream().map(it -> it.getEvent()).collect(Collectors.toList());
 	}
 	
+	public static EventDirection getDirection(Event event) {
+		EventDeclaration eventDeclaration = ecoreUtil.getContainerOfType(event, EventDeclaration.class);
+		return eventDeclaration.getDirection();
+	}
+	
+	
 	public static List<EventDeclaration> getAllEventDeclarations(Port port) {
 		return getAllEventDeclarations(port.getInterfaceRealization().getInterface());
 	}
@@ -340,6 +368,14 @@ public class StatechartModelDerivedFeatures extends ExpressionModelDerivedFeatur
 					.collect(Collectors.toList()));
 		}
 		return events;
+	}
+	
+	public static boolean isInputEvent(Port port, Event event) {
+		return getInputEvents(port).contains(event);
+	}
+	
+	public static boolean isOutputEvent(Port port, Event event) {
+		return getOutputEvents(port).contains(event);
 	}
 	
 	public static Collection<Port> getAllPorts(AsynchronousAdapter wrapper) {
@@ -459,12 +495,36 @@ public class StatechartModelDerivedFeatures extends ExpressionModelDerivedFeatur
 		throw new IllegalArgumentException("Not known type: " + composite);
 	}
 	
+    public static boolean isSynchronous(Component component) {
+    	return component instanceof SynchronousComponent;
+    }
+    
+    public static boolean isAsynchronous(Component component) {
+    	return component instanceof AsynchronousComponent;
+    }
+	
     public static boolean isCascade(ComponentInstance instance) {
     	if (getDerivedType(instance) instanceof StatechartDefinition) {
     		// Statecharts are cascade if contained by cascade composite components
     		return instance.eContainer() instanceof CascadeCompositeComponent;
    		}
    		return getDerivedType(instance) instanceof CascadeCompositeComponent;
+    }
+    
+    public static boolean isSynchronous(ComponentInstance instance) {
+    	return isSynchronous(getDerivedType(instance));
+    }
+    
+    public static boolean isAsynchronous(ComponentInstance instance) {
+    	return isAsynchronous(getDerivedType(instance));
+    }
+    
+    public static boolean isStatechart(ComponentInstance instance) {
+    	return getDerivedType(instance) instanceof StatechartDefinition;
+    }
+    
+    public static boolean isAdapter(ComponentInstance instance) {
+    	return getDerivedType(instance) instanceof AsynchronousAdapter;
     }
 	
 	public static int getLevel(StateNode stateNode) {
@@ -901,14 +961,42 @@ public class StatechartModelDerivedFeatures extends ExpressionModelDerivedFeatur
 					}
 				}
 			}
+			if (siblingComponent instanceof AsynchronousAdapter) {
+				AsynchronousAdapter asynchronousAdapter = (AsynchronousAdapter) siblingComponent;
+				SynchronousComponentInstance componentInstance = asynchronousAdapter.getWrappedComponent();
+				if (componentInstance.getType() == component) {
+					componentInstances.add(componentInstance);
+				}
+			}
 		}
 		return componentInstances;
 	}
 	
 	public static ComponentInstance getReferencingComponentInstance(Component component) {
 		Collection<ComponentInstance> instances = getReferencingComponentInstances(component);
-		assert instances.size() == 1;
+		if (instances.size() != 1) {
+			throw new IllegalArgumentException("Not one referencing instance: " + instances);
+		}
 		return instances.stream().findFirst().get();
+	}
+	
+	public static List<ComponentInstance> getParentComponentInstances(ComponentInstance instance) {
+		Component container = ecoreUtil.getContainerOfType(instance, Component.class);
+		try {
+			ComponentInstance referencingComponentInstance = getReferencingComponentInstance(container);
+			List<ComponentInstance> parentComponentInstances = getParentComponentInstances(referencingComponentInstance);
+			parentComponentInstances.add(referencingComponentInstance);
+			return parentComponentInstances;
+		} catch (IllegalArgumentException e) {
+			// Top component
+			return new ArrayList<ComponentInstance>();
+		}
+	}
+	
+	public static List<ComponentInstance> getComponentInstanceChain(ComponentInstance instance) {
+		List<ComponentInstance> parentComponentInstances = getParentComponentInstances(instance);
+		parentComponentInstances.add(instance);
+		return parentComponentInstances;
 	}
 	
 	public static List<SynchronousComponentInstance> getScheduledInstances(AbstractSynchronousCompositeComponent component) {

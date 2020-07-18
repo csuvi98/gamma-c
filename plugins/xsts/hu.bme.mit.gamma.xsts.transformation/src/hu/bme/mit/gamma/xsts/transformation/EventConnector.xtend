@@ -14,7 +14,7 @@ import hu.bme.mit.gamma.statechart.composite.BroadcastChannel
 import hu.bme.mit.gamma.statechart.composite.CompositeComponent
 import hu.bme.mit.gamma.statechart.composite.SimpleChannel
 import hu.bme.mit.gamma.util.GammaEcoreUtil
-import hu.bme.mit.gamma.xsts.model.model.XSTS
+import hu.bme.mit.gamma.xsts.model.XSTS
 
 import static com.google.common.base.Preconditions.checkState
 
@@ -22,6 +22,9 @@ import static extension hu.bme.mit.gamma.statechart.derivedfeatures.StatechartMo
 import static extension hu.bme.mit.gamma.xsts.transformation.util.Namings.*
 
 class EventConnector {
+	// Singleton
+	public static final EventConnector INSTANCE =  new EventConnector
+	protected new() {}
 	// Auxiliary objects
 	protected extension GammaEcoreUtil expressionUtil = GammaEcoreUtil.INSTANCE
 	
