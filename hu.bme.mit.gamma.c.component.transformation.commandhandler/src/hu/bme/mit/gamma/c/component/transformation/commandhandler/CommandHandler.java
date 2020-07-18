@@ -27,9 +27,12 @@ import com.google.inject.Injector;
 
 import hu.bme.mit.gamma.c.transformation.CTransformer;
 import hu.bme.mit.gamma.expression.model.Expression;
+import hu.bme.mit.gamma.lowlevel.xsts.transformation.actionprimer.ActionPrimer;
+import hu.bme.mit.gamma.lowlevel.xsts.transformation.actionprimer.ChoiceInliner;
+import hu.bme.mit.gamma.lowlevel.xsts.transformation.serializer.ActionSerializer;
 import hu.bme.mit.gamma.statechart.language.ui.internal.LanguageActivator;
 import hu.bme.mit.gamma.statechart.language.ui.serializer.StatechartLanguageSerializer;
-import hu.bme.mit.gamma.xsts.model.model.XSTS;
+import hu.bme.mit.gamma.xsts.model.XSTS;
 import hu.bme.mit.gamma.xsts.transformation.GammaToXSTSTransformer;
 import hu.bme.mit.gamma.statechart.interface_.Package;
 
@@ -61,6 +64,21 @@ public class CommandHandler extends AbstractHandler {
 						
 						File outputFile = new File(filePathModel);
 						XSTS xSts = gammaToXSTSTransformer.preprocessAndExecute(compositeSystem,expressionList,outputFile);
+						
+						ActionPrimer actionPrimer = new ChoiceInliner();// Good for the original actions too
+						//
+						xSts.setVariableInitializingAction(actionPrimer.transform(xSts.getVariableInitializingAction()));
+	                    xSts.setConfigurationInitializingAction(actionPrimer.transform(xSts.getConfigurationInitializingAction()));
+	                    xSts.setEntryEventAction(actionPrimer.transform(xSts.getEntryEventAction()));
+	                    xSts.setMergedAction(actionPrimer.transform(xSts.getMergedAction()));
+	                    xSts.setInEventAction(actionPrimer.transform(xSts.getInEventAction()));
+	                    xSts.setOutEventAction(actionPrimer.transform(xSts.getOutEventAction()));
+						
+						
+						ActionSerializer xStsActionSerializer = ActionSerializer.INSTANCE;
+						CharSequence xStsString = xStsActionSerializer.serializeXSTS(xSts);
+						System.out.println(xStsString);
+						
 						
 						//CTransformer cTransformer = new CTransformer
 						

@@ -4,10 +4,7 @@ Bundle-Name: Plugin Template Example Statechart Transformation
 Bundle-SymbolicName: hu.bme.mit.gamma.c.transformation;singleton:=true
 Bundle-Version: 2.3.1.qualifier
 Bundle-Vendor: BME-FTSRG
-Export-Package: hu.bme.mit.gamma.c.transformation,
- hu.bme.mit.gamma.c.transformation.patterns,
- hu.bme.mit.gamma.plugintemplate.transformation,
- hu.bme.mit.gamma.c.transformation.patterns
+Export-Package: hu.bme.mit.gamma.c.transformation
 Require-Bundle: hu.bme.mit.gamma.statechart.model,
  org.eclipse.viatra.transformation.runtime.emf,
  org.eclipse.viatra.transformation.evm,

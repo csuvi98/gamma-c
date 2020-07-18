@@ -1,6 +1,6 @@
 package hu.bme.mit.gamma.c.transformation
 
-import hu.bme.mit.gamma.xsts.model.model.XSTS
+import hu.bme.mit.gamma.xsts.model.XSTS
 
 class CStatechartWrapperGenerator {
 	//final StatechartDefinition gammaStatechart

@@ -1,6 +1,6 @@
 package hu.bme.mit.gamma.c.transformation
 
-import hu.bme.mit.gamma.xsts.model.model.XSTS
+import hu.bme.mit.gamma.xsts.model.XSTS
 import org.eclipse.emf.ecore.resource.Resource
 import hu.bme.mit.gamma.expression.model.EnumerationTypeDefinition
 import hu.bme.mit.gamma.expression.model.TypeReference

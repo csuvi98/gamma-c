@@ -12,17 +12,17 @@ package hu.bme.mit.gamma.c.transformation
 
 import hu.bme.mit.gamma.expression.model.Expression
 import hu.bme.mit.gamma.expression.model.VariableDeclaration
-import hu.bme.mit.gamma.xsts.model.model.Action
-import hu.bme.mit.gamma.xsts.model.model.AssignmentAction
-import hu.bme.mit.gamma.xsts.model.model.AssumeAction
-import hu.bme.mit.gamma.xsts.model.model.NonDeterministicAction
-import hu.bme.mit.gamma.xsts.model.model.SequentialAction
+import hu.bme.mit.gamma.xsts.model.Action
+import hu.bme.mit.gamma.xsts.model.AssignmentAction
+import hu.bme.mit.gamma.xsts.model.AssumeAction
+import hu.bme.mit.gamma.xsts.model.NonDeterministicAction
+import hu.bme.mit.gamma.xsts.model.SequentialAction
 import java.util.Map
 
 import static com.google.common.base.Preconditions.checkArgument
 
-import static extension hu.bme.mit.gamma.xsts.model.derivedfeatures.XSTSDerivedFeatures.*
-import hu.bme.mit.gamma.xsts.model.model.XSTS
+import static extension hu.bme.mit.gamma.xsts.derivedfeatures.XSTSDerivedFeatures.*
+import hu.bme.mit.gamma.xsts.model.XSTS
 import hu.bme.mit.gamma.expression.model.ReferenceExpression
 import hu.bme.mit.gamma.expression.model.TypeReference
 
@@ -72,6 +72,10 @@ class ActionSerializer {
 	def dispatch CharSequence serialize(Action action) {
 		throw new IllegalArgumentException("Not supported action: " + action)
 	}
+	
+	def dispatch CharSequence serialize(AssignmentAction action) '''
+		«action.serializeTemporaryAssignment»
+	'''
 	
 	def dispatch CharSequence serialize(NonDeterministicAction action) '''
 		«action.serializeNonDeterministicAction»

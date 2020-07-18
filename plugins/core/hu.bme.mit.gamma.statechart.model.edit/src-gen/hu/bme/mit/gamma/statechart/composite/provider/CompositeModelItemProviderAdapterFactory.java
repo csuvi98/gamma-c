@@ -370,6 +370,29 @@ public class CompositeModelItemProviderAdapterFactory extends CompositeModelAdap
 	}
 
 	/**
+	 * This keeps track of the one adapter used for all {@link hu.bme.mit.gamma.statechart.composite.ComponentInstanceReference} instances.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	protected ComponentInstanceReferenceItemProvider componentInstanceReferenceItemProvider;
+
+	/**
+	 * This creates an adapter for a {@link hu.bme.mit.gamma.statechart.composite.ComponentInstanceReference}.
+	 * <!-- begin-user-doc -->
+	 * <!-- end-user-doc -->
+	 * @generated
+	 */
+	@Override
+	public Adapter createComponentInstanceReferenceAdapter() {
+		if (componentInstanceReferenceItemProvider == null) {
+			componentInstanceReferenceItemProvider = new ComponentInstanceReferenceItemProvider(this);
+		}
+
+		return componentInstanceReferenceItemProvider;
+	}
+
+	/**
 	 * This returns the root adapter factory that contains this factory.
 	 * <!-- begin-user-doc -->
 	 * <!-- end-user-doc -->

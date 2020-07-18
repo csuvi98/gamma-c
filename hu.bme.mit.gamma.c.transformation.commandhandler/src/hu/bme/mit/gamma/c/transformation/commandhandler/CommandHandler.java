@@ -41,7 +41,7 @@ import hu.bme.mit.gamma.statechart.lowlevel.transformation.GammaToLowlevelTransf
 import hu.bme.mit.gamma.statechart.interface_.Package;
 import hu.bme.mit.gamma.statechart.statechart.StatechartDefinition;
 import hu.bme.mit.gamma.statechart.interface_.Component; 
-import hu.bme.mit.gamma.xsts.model.model.XSTS;
+import hu.bme.mit.gamma.xsts.model.XSTS;
 import hu.bme.mit.gamma.xsts.transformation.GammaToXSTSTransformer;
 
 public class CommandHandler extends AbstractHandler {
@@ -100,8 +100,8 @@ public class CommandHandler extends AbstractHandler {
 						logger.log(Level.INFO, "The Gamma low level - xSTS transformation has been finished.");
 						logger.log(Level.INFO, "Starting xSTS serialization.");
 						// Serializing the xSTS
-						ActionSerializer actionSerializer = new ActionSerializer();
-						CharSequence xStsString = actionSerializer.serializeXSTS(xSts);
+						ActionSerializer xStsActionSerializer = ActionSerializer.INSTANCE;
+						CharSequence xStsString = xStsActionSerializer.serializeXSTS(xSts);
 						System.out.println(xStsString);
 						// Generating and serializing the expression from the actions
 //						ActionToExpressionTransformer actionToExpressionTransformer = new ActionToExpressionTransformer();
