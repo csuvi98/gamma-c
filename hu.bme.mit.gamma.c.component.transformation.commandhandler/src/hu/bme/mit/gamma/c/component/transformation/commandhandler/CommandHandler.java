@@ -79,22 +79,36 @@ public class CommandHandler extends AbstractHandler {
 						CharSequence xStsString = xStsActionSerializer.serializeXSTS(xSts);
 						System.out.println(xStsString);
 						
+						String compositionHeaderPath = parentFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentHeader.h";
+						String compositionWrapperPath = parentFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentWrapper.c";
+						String compositionWrapperHeaderPath = parentFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentWrapperHeader.h";
+						
 						
 						//CTransformer cTransformer = new CTransformer
 						
 						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
 						
 						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
-						
 						CTransformer cTransformer = new CTransformer(resource, xSts);
 						
-						cTransformer.execute("mind1");
+						cTransformer.execute(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentHeader.h");
 						
 						printModel.println(cTransformer.getModel());
+						printModel.close();
+						
+						printModel = new PrintWriter(compositionHeaderPath, "UTF-8");
 						printModel.println(cTransformer.getHeader());
+						printModel.close();
+						
+						printModel = new PrintWriter(compositionWrapperPath, "UTF-8");
 						printModel.println(cTransformer.getWrapper());
+						printModel.close();
+						
+						printModel = new PrintWriter(compositionWrapperHeaderPath, "UTF-8");
 						printModel.println(cTransformer.getWrapperHeader());
 						printModel.close();
+						
+						
 					} 
 					logger.log(Level.INFO, "The Gamma statechart - Gamma statechart example transformation has been finished.");
 				}
