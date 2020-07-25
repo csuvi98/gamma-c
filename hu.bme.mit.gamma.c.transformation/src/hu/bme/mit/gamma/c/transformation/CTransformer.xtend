@@ -22,6 +22,8 @@ class CTransformer {
 	
 	protected XSTS xSts;
 	
+	
+	
 	protected String model;
 	protected String header;
 	protected String headerName;
@@ -29,8 +31,10 @@ class CTransformer {
 	protected String wrapper;
 	protected String wrapperHeader;
 	protected String wrapperHeaderName;
+	protected String temporaryIOName = "";
 	protected List<String> publicHeaders = new ArrayList<String>();
 	protected List<String> publicHeaderFileNames = new ArrayList<String>();
+	protected List<String> ioStrings = new ArrayList<String>();
 
 	new(Resource resource, XSTS xSts) {
 		this.resource = resource
@@ -81,17 +85,17 @@ class CTransformer {
 				«xSts.serializeInitializingAction»
 			}
 			
-			«FOR variable : xSts.variableGroups
-								.map[it.variables]
-								.flatten SEPARATOR System.lineSeparator»
-				void set«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name») {
-					statechart->«variable.name» = «variable.name»;
-				}
-							
-				«variable.type.serialize» get«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
-					return statechart->«variable.name»;
-				}
-			«ENDFOR»
+«««			«FOR variable : xSts.variableGroups
+«««								.map[it.variables]
+«««								.flatten SEPARATOR System.lineSeparator»
+«««				void set«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name») {
+«««					statechart->«variable.name» = «variable.name»;
+«««				}
+«««							
+«««				«variable.type.serialize» get«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
+«««					return statechart->«variable.name»;
+«««				}
+«««			«ENDFOR»
 			
 			
 				void clearOutEvents«STRUCT_NAME»(«STRUCT_NAME»* statechart){
@@ -149,6 +153,13 @@ class CTransformer {
 		return wrapperHeader;
 	}
 	
+	def void putStringInIOList(String string){
+		ioStrings.add(string);
+	}
+	def void assignStringToTempIO(String string){
+		temporaryIOName = string;
+	}
+	
 	def void createHeader(){
 		header = '''
 			«FOR typeDeclarations: xSts.publicTypeDeclarations»
@@ -169,7 +180,12 @@ class CTransformer {
 				«ENDFOR»
 							
 				«FOR variableDeclaration : xSts.retrieveNotTimeoutVariables»
+					«assignStringToTempIO(variableDeclaration.type.serialize + variableDeclaration.name)»
+					«IF !(ioStrings.contains(temporaryIOName))»
 					«variableDeclaration.type.serialize» «variableDeclaration.name»;
+					«putStringInIOList(temporaryIOName)»
+					«ELSE»
+					«ENDIF»
 				«ENDFOR»
 							
 				«FOR variableDeclaration : xSts.retrieveTimeouts»
@@ -183,14 +199,14 @@ class CTransformer {
 			void reset«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 			
 			
-			«FOR variable : xSts.variableGroups
-											.map[it.variables]
-											.flatten SEPARATOR System.lineSeparator»
-				void set«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name»);
-										
-				«variable.type.serialize» get«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart);
+«««			«FOR variable : xSts.variableGroups
+«««											.map[it.variables]
+«««											.flatten SEPARATOR System.lineSeparator»
+«««				void set«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name»);
+«««										
+«««				«variable.type.serialize» get«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 
-			«ENDFOR»
+«««			«ENDFOR»
 			
 			
 			void changeState«STRUCT_NAME»(«STRUCT_NAME»* statechart);

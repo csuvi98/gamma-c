@@ -48,7 +48,8 @@ class CStatechartWrapperGenerator {
 				gettimeofday(&(wrappedStatechart->elapsedTimeval), NULL);
 				long elapsedTime = (((wrappedStatechart->elapsedTimeval.tv_sec - wrappedStatechart->startTimeval.tv_sec) * 1000000 + wrappedStatechart->elapsedTimeval.tv_usec - wrappedStatechart->startTimeval.tv_usec)/1000);
 				«FOR timeout : xSts.clockVariables»
-					set«timeout.name.toFirstUpper»«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»), get«timeout.name.toFirstUpper»«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»)) + elapsedTime);
+					wrappedStatechart->«STRUCT_NAME.toFirstLower».«timeout.name» = wrappedStatechart->«STRUCT_NAME.toFirstLower».«timeout.name» + elapsedTime;
+«««					set«timeout.name.toFirstUpper»«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»), get«timeout.name.toFirstUpper»«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»)) + elapsedTime);
 				«ENDFOR»
 				runCycle«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»));
 				gettimeofday(&(wrappedStatechart->startTimeval), NULL);

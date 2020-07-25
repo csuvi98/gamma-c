@@ -90,7 +90,7 @@ public class CommandHandler extends AbstractHandler {
 						
 						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
 						CTransformer cTransformer = new CTransformer(resource, xSts);
-						
+						cTransformer.setWrapperHeaderName(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentWrapperHeader.h");
 						cTransformer.execute(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentHeader.h");
 						
 						printModel.println(cTransformer.getModel());
