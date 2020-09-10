@@ -1,30 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description">
-  <viewpoint:DAnalysis xmi:id="_kvjYwGnlEemgIeNwzXrpuw" selectedViews="_k-WCsGnlEemgIeNwzXrpuw" version="13.0.0.201804031646">
+  <viewpoint:DAnalysis uid="_kvjYwGnlEemgIeNwzXrpuw" selectedViews="_k-WCsGnlEemgIeNwzXrpuw" version="14.1.0.201810161215">
     <semanticResources>action.ecore</semanticResources>
     <semanticResources>action.genmodel</semanticResources>
     <semanticResources>platform:/resource/hu.bme.mit.gamma.constraint.model/model/constraint.ecore</semanticResources>
     <semanticResources>http://www.eclipse.org/emf/2002/Ecore</semanticResources>
     <semanticResources>platform:/resource/hu.bme.mit.gamma.constraint.model/model/constraint.genmodel</semanticResources>
-    <ownedViews xmi:type="viewpoint:DView" xmi:id="_k-WCsGnlEemgIeNwzXrpuw">
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/model/expression.ecore</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/model/expression.genmodel</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/Action.java</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EObject.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/notify/Notifier.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EClass.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/resource/Resource.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EStructuralFeature.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EReference.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/util/EList.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/util/TreeIterator.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>types</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EOperation.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/notify/Adapter.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/notify/Notification.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EClassifier.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EAttribute.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EGenericType.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/ENamedElement.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EPackage.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/ETypeParameter.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EModelElement.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EAnnotation.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/util/EMap.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EFactory.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EDataType.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/InternalEObject.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/notify/NotificationChain.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/util/URI.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/util/Pool.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/util/WeakInterningHashSet.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/util/InterningSet.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/resource/ResourceSet.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/notify/AdapterFactory.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/resource/URIConverter.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/resource/URIHandler.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/resource/ContentHandler.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/ETypedElement.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/EParameter.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/ActionModelFactory.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/ProcedureDeclaration.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/EmptyStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/Block.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/Branch.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/VariableDeclarationStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/ConstantDeclarationStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/ExpressionStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/BreakStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/ReturnStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/IfStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/SwitchStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/ForStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/ChoiceStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/AssignmentStatement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/ActionModelPackage.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/Statement.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ActionImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ActionModelFactoryImpl.java</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/impl/EFactoryImpl.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/impl/EModelElementImpl.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/FunctionDeclaration.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/Declaration.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/ParametricElement.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/NamedElement.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/Type.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/ParameterDeclaration.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/ValueDeclaration.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/Expression.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/VariableDeclaration.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/InitializableElement.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/ConstantDeclaration.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/ReferenceExpression.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/NullaryExpression.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ActionModelPackageImpl.java</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/impl/EPackageImpl.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/impl/ENamedElementImpl.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/AssignmentStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/StatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/BlockImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/BranchImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/BreakStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ChoiceStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ConstantDeclarationStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/EmptyStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ExpressionStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ForStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/IfStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ProcedureDeclarationImpl.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/impl/FunctionDeclarationImpl.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/impl/DeclarationImpl.java</semanticResources>
+    <semanticResources>platform:/resource/hu.bme.mit.gamma.expression.model/src-gen/hu/bme/mit/gamma/expression/model/impl/NamedElementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/ReturnStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/SwitchStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/impl/VariableDeclarationStatementImpl.java</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/util/ActionModelAdapterFactory.java</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.common_2.16.0.v20190625-1131.jar!/org/eclipse/emf/common/notify/impl/AdapterFactoryImpl.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <semanticResources>../src-gen/hu/bme/mit/gamma/action/model/util/ActionModelSwitch.java</semanticResources>
+    <semanticResources>archive:file:///E:/6.félév/TDK-ÖNLAB/gamma_repair/eclipse/plugins/org.eclipse.emf.ecore_2.19.0.v20190822-1451.jar!/org/eclipse/emf/ecore/util/Switch.class?hu.bme.mit.gamma.action.model</semanticResources>
+    <ownedViews xmi:type="viewpoint:DView" uid="_k-WCsGnlEemgIeNwzXrpuw">
       <viewpoint xmi:type="description:Viewpoint" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']"/>
-      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" xmi:id="_lF2Y4GnlEemgIeNwzXrpuw" name="model" repPath="#_lAYDAGnlEemgIeNwzXrpuw">
+      <ownedRepresentationDescriptors xmi:type="viewpoint:DRepresentationDescriptor" uid="_lF2Y4GnlEemgIeNwzXrpuw" name="model" repPath="#_lFvrMGnlEemgIeNwzXrpuw">
         <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
         <target xmi:type="ecore:EPackage" href="model.ecore#/"/>
       </ownedRepresentationDescriptors>
     </ownedViews>
   </viewpoint:DAnalysis>
-  <diagram:DSemanticDiagram xmi:id="_lFvrMGnlEemgIeNwzXrpuw" name="model" uid="_lAYDAGnlEemgIeNwzXrpuw">
-    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_lFvrMWnlEemgIeNwzXrpuw" source="DANNOTATION_CUSTOMIZATION_KEY">
-      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" xmi:id="_lFvrMmnlEemgIeNwzXrpuw"/>
+  <diagram:DSemanticDiagram uid="_lFvrMGnlEemgIeNwzXrpuw" name="model">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_lFvrMWnlEemgIeNwzXrpuw" source="DANNOTATION_CUSTOMIZATION_KEY">
+      <data xmi:type="diagram:ComputedStyleDescriptionRegistry" uid="_lFvrMmnlEemgIeNwzXrpuw"/>
     </ownedAnnotationEntries>
-    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" xmi:id="_lGtUgGnlEemgIeNwzXrpuw" source="GMF_DIAGRAMS">
+    <ownedAnnotationEntries xmi:type="description:AnnotationEntry" uid="_lGtUgGnlEemgIeNwzXrpuw" source="GMF_DIAGRAMS">
       <data xmi:type="notation:Diagram" xmi:id="_lGtUgWnlEemgIeNwzXrpuw" type="Sirius" element="_lFvrMGnlEemgIeNwzXrpuw" measurementUnit="Pixel">
         <styles xmi:type="notation:DiagramStyle" xmi:id="_lGtUgmnlEemgIeNwzXrpuw"/>
       </data>
     </ownedAnnotationEntries>
     <description xmi:type="description_1:DiagramDescription" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']"/>
-    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" xmi:id="_lFvrNGnlEemgIeNwzXrpuw"/>
+    <filterVariableHistory xmi:type="diagram:FilterVariableHistory" uid="_lFvrNGnlEemgIeNwzXrpuw"/>
     <activatedLayers xmi:type="description_1:Layer" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@defaultLayer"/>
     <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@additionalLayers[name='Package']"/>
     <activatedLayers xmi:type="description_1:AdditionalLayer" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Entities']/@additionalLayers[name='Validation']"/>

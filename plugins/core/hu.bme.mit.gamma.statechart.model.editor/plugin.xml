@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+
+<!--
+-->
+
+<plugin>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated statechart -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="hu.bme.mit.gamma.statechart.composite.presentation.CompositeModelModelWizardID"
+            name="%_UI_CompositeModelModelWizard_label"
+            class="hu.bme.mit.gamma.statechart.composite.presentation.CompositeModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/CompositeModelModelFile.gif">
+         <description>%_UI_CompositeModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated statechart -->
+      <editor
+            id="hu.bme.mit.gamma.statechart.composite.presentation.CompositeModelEditorID"
+            name="%_UI_CompositeModelEditor_label"
+            icon="icons/full/obj16/CompositeModelModelFile.gif"
+            extensions="compositemodel"
+            class="hu.bme.mit.gamma.statechart.composite.presentation.CompositeModelEditor"
+            contributorClass="hu.bme.mit.gamma.statechart.composite.presentation.CompositeModelActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated statechart -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="hu.bme.mit.gamma.statechart.contract.presentation.ContractModelModelWizardID"
+            name="%_UI_ContractModelModelWizard_label"
+            class="hu.bme.mit.gamma.statechart.contract.presentation.ContractModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/ContractModelModelFile.gif">
+         <description>%_UI_ContractModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated statechart -->
+      <editor
+            id="hu.bme.mit.gamma.statechart.contract.presentation.ContractModelEditorID"
+            name="%_UI_ContractModelEditor_label"
+            icon="icons/full/obj16/ContractModelModelFile.gif"
+            extensions="contractmodel"
+            class="hu.bme.mit.gamma.statechart.contract.presentation.ContractModelEditor"
+            contributorClass="hu.bme.mit.gamma.statechart.contract.presentation.ContractModelActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated statechart -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="hu.bme.mit.gamma.statechart.interface_.presentation.InterfaceModelModelWizardID"
+            name="%_UI_InterfaceModelModelWizard_label"
+            class="hu.bme.mit.gamma.statechart.interface_.presentation.InterfaceModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/InterfaceModelModelFile.gif">
+         <description>%_UI_InterfaceModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated statechart -->
+      <editor
+            id="hu.bme.mit.gamma.statechart.interface_.presentation.InterfaceModelEditorID"
+            name="%_UI_InterfaceModelEditor_label"
+            icon="icons/full/obj16/InterfaceModelModelFile.gif"
+            extensions="interfacemodel"
+            class="hu.bme.mit.gamma.statechart.interface_.presentation.InterfaceModelEditor"
+            contributorClass="hu.bme.mit.gamma.statechart.interface_.presentation.InterfaceModelActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated statechart -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="hu.bme.mit.gamma.statechart.phase.presentation.PhaseModelModelWizardID"
+            name="%_UI_PhaseModelModelWizard_label"
+            class="hu.bme.mit.gamma.statechart.phase.presentation.PhaseModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/PhaseModelModelFile.gif">
+         <description>%_UI_PhaseModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated statechart -->
+      <editor
+            id="hu.bme.mit.gamma.statechart.phase.presentation.PhaseModelEditorID"
+            name="%_UI_PhaseModelEditor_label"
+            icon="icons/full/obj16/PhaseModelModelFile.gif"
+            extensions="phasemodel"
+            class="hu.bme.mit.gamma.statechart.phase.presentation.PhaseModelEditor"
+            contributorClass="hu.bme.mit.gamma.statechart.phase.presentation.PhaseModelActionBarContributor">
+      </editor>
+   </extension>
+
+   <extension point="org.eclipse.ui.newWizards">
+      <!-- @generated statechart -->
+      <category
+            id="org.eclipse.emf.ecore.Wizard.category.ID"
+            name="%_UI_Wizard_category"/>
+      <wizard
+            id="hu.bme.mit.gamma.statechart.statechart.presentation.StatechartModelModelWizardID"
+            name="%_UI_StatechartModelModelWizard_label"
+            class="hu.bme.mit.gamma.statechart.statechart.presentation.StatechartModelModelWizard"
+            category="org.eclipse.emf.ecore.Wizard.category.ID"
+            icon="icons/full/obj16/StatechartModelModelFile.gif">
+         <description>%_UI_StatechartModelModelWizard_description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
+      </wizard>
+   </extension>
+
+   <extension point="org.eclipse.ui.editors">
+      <!-- @generated statechart -->
+      <editor
+            id="hu.bme.mit.gamma.statechart.statechart.presentation.StatechartModelEditorID"
+            name="%_UI_StatechartModelEditor_label"
+            icon="icons/full/obj16/StatechartModelModelFile.gif"
+            extensions="gsm"
+            class="hu.bme.mit.gamma.statechart.statechart.presentation.StatechartModelEditor"
+            contributorClass="hu.bme.mit.gamma.statechart.statechart.presentation.StatechartModelActionBarContributor">
+      </editor>
+   </extension>
+
+</plugin>
