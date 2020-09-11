@@ -29,6 +29,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 import com.google.inject.Injector;
 
 import hu.bme.mit.gamma.c.transformation.CTransformer;
+import hu.bme.mit.gamma.c.transformation.TempActionSerializer;
 import hu.bme.mit.gamma.lowlevel.xsts.transformation.LowlevelToXSTSTransformer;
 import hu.bme.mit.gamma.lowlevel.xsts.transformation.actionprimer.ActionPrimer;
 import hu.bme.mit.gamma.lowlevel.xsts.transformation.actionprimer.ChoiceInliner;
@@ -40,7 +41,8 @@ import hu.bme.mit.gamma.statechart.language.ui.serializer.StatechartLanguageSeri
 import hu.bme.mit.gamma.statechart.lowlevel.transformation.GammaToLowlevelTransformer;
 import hu.bme.mit.gamma.statechart.interface_.Package;
 import hu.bme.mit.gamma.statechart.statechart.StatechartDefinition;
-import hu.bme.mit.gamma.statechart.interface_.Component; 
+import hu.bme.mit.gamma.statechart.interface_.Component;
+
 import hu.bme.mit.gamma.xsts.model.XSTS;
 import hu.bme.mit.gamma.xsts.transformation.GammaToXSTSTransformer;
 
@@ -60,14 +62,14 @@ public class CommandHandler extends AbstractHandler {
 						String fileURISubstring = firstElement.getLocationURI().toString().substring(5);
 						String parentFolder = fileURISubstring.substring(0, fileURISubstring.lastIndexOf("/"));
 						String fileName = firstElement.getName();
-						String fileNameWithoutExtenstion = fileName.substring(0, fileName.lastIndexOf("."));
+						//String fileNameWithoutExtenstion = fileName.substring(0, fileName.lastIndexOf("."));
 						ResourceSet resSet = new ResourceSetImpl();
 						URI compositeSystemURI = URI.createPlatformResourceURI(firstElement.getFullPath().toString(), true);
 						Resource resource = resSet.getResource(compositeSystemURI, true);
 						Package gammaPackage = (Package) resource.getContents().get(0);
 						StatechartDefinition gammaStatechart = getStatechart(gammaPackage);
 						// Loading all resources, needed as the events and interfaces are in another resource ("Interface.gcd")
-						resolveResources(gammaPackage, resSet, new HashSet<Resource>());
+						/*resolveResources(gammaPackage, resSet, new HashSet<Resource>());
 						GammaToLowlevelTransformer transformer = new GammaToLowlevelTransformer();
 						logger.log(Level.INFO, "The resource set before the Gamma - low level statechart transformation: " + resSet);
 						hu.bme.mit.gamma.statechart.lowlevel.model.Package lowlevelPackage = transformer.execute(gammaPackage);
@@ -161,7 +163,101 @@ public class CommandHandler extends AbstractHandler {
 						
 						
 						
+						*/
+						String fileNameWithoutExtenstion = gammaStatechart.getName();
+						//Package gammaPackage = (Package) gammaStatechart.eContainer();
+						GammaToLowlevelTransformer transformer = new GammaToLowlevelTransformer();
+						hu.bme.mit.gamma.statechart.lowlevel.model.Package lowlevelPackage = transformer.execute(gammaPackage);
+						normalSave(lowlevelPackage, parentFolder, fileNameWithoutExtenstion + ".lgsm");
+						logger.log(Level.INFO, "The Gamma - low level statechart transformation has been finished.");
+						logger.log(Level.INFO, "Starting Gamma low level - xSTS transformation.");
+						// Note: the package is not in a resource
+						LowlevelToXSTSTransformer lowlevelTransformer = new LowlevelToXSTSTransformer(lowlevelPackage);
+						Entry<XSTS, L2STrace> resultModels = lowlevelTransformer.execute();
+						XSTS xSts = resultModels.getKey();
+						lowlevelTransformer.dispose();
+						// XSTS to Java serializer
+						TempActionSerializer cActionSerializer = null;
+						// Set the following variable to specify the action priming setting
+						ActionPrimingSetting setting = ActionPrimingSetting.VARIABLE_COMMONIZER;
+						if (setting == ActionPrimingSetting.VARIABLE_COMMONIZER) {
+							ActionPrimer actionPrimer = new VariableCommonizer(); // Not necessary to use it for code generation
+							cActionSerializer = new hu.bme.mit.gamma.c.transformation.CommonizedVariableActionSerializer(); // Good for the original actions too
+							// If we wanted to commonize the actions of the XSTS, we would have to do it here
+							// ...
+							xSts.setVariableInitializingAction(actionPrimer.transform(xSts.getVariableInitializingAction()));
+							xSts.setConfigurationInitializingAction(actionPrimer.transform(xSts.getConfigurationInitializingAction()));
+							xSts.setEntryEventAction(actionPrimer.transform(xSts.getEntryEventAction()));
+							xSts.setMergedAction(actionPrimer.transform(xSts.getMergedAction()));
+							xSts.setInEventAction(actionPrimer.transform(xSts.getInEventAction()));
+							xSts.setOutEventAction(actionPrimer.transform(xSts.getOutEventAction()));
+						}
+						else {
+							ActionPrimer actionPrimer = new ChoiceInliner(true);
+							cActionSerializer = new hu.bme.mit.gamma.c.transformation.InlinedChoiceActionSerializer();
+							xSts.setVariableInitializingAction(actionPrimer.transform(xSts.getVariableInitializingAction()));
+							xSts.setConfigurationInitializingAction(actionPrimer.transform(xSts.getConfigurationInitializingAction()));
+							xSts.setEntryEventAction(actionPrimer.transform(xSts.getEntryEventAction()));
+							xSts.setMergedAction(actionPrimer.transform(xSts.getMergedAction()));
+							xSts.setInEventAction(actionPrimer.transform(xSts.getInEventAction()));
+							xSts.setOutEventAction(actionPrimer.transform(xSts.getOutEventAction()));
+						}
+						// Saving the xSTS model
+						normalSave(xSts, parentFolder, fileNameWithoutExtenstion + ".gsts");
+						normalSave(resultModels.getValue(), parentFolder, "." + fileNameWithoutExtenstion + ".l2s");
+						logger.log(Level.INFO, "The Gamma low level - xSTS transformation has been finished.");
+						logger.log(Level.INFO, "Starting xSTS serialization.");
+						// Serializing the xSTS
+						ActionSerializer actionSerializer = ActionSerializer.INSTANCE;
+						CharSequence xStsString = actionSerializer.serializeXSTS(xSts);
+						System.out.println(xStsString);
+						logger.log(Level.INFO, "Starting xSTS Java code generation.");
+						CTransformer exampleTransformer = new CTransformer(resource, xSts);
 						
+						
+						
+						
+						
+						IContainer pFolder = firstElement.getParent();
+						
+						String filePathHeader = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h";
+						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
+						String filePathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "CStatemachine.c";
+						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
+						exampleTransformer.setWrapperHeaderName(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "WrappedStatemachineHeader.h");
+						
+						exampleTransformer.execute(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h");
+						printModel.println(exampleTransformer.getModel());
+						printModel.close();
+						
+						//String filePathHeader = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "StatechartHeader.h";
+						PrintWriter printHeader = new PrintWriter(filePathHeader, "UTF-8");
+						printHeader.println(exampleTransformer.getHeader());
+						printHeader.close();
+						
+						List<String> publicHeaderFiles = exampleTransformer.getPublicHeaders();
+						List<String> publicHeaderFileNames = exampleTransformer.getPublicHeaderFileNames();
+						
+						for(int header = 0; header < publicHeaderFiles.size(); header++) {
+							String publicHeaderFilePath = pFolder.getLocation().toString() + File.separator + publicHeaderFileNames.get(header) + ".h";
+							PrintWriter printPublicHeader = new PrintWriter(publicHeaderFilePath, "UTF-8");
+							printPublicHeader.print(publicHeaderFiles.get(header));
+							printPublicHeader.close();
+						}
+						
+						String wrapperHeaderPathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "WrappedStatemachineHeader.h";
+						
+						PrintWriter wrapperHeaderPrintModel = new PrintWriter(wrapperHeaderPathModel, "UTF-8");
+						wrapperHeaderPrintModel.println(exampleTransformer.getWrapperHeader());
+						wrapperHeaderPrintModel.close();
+						
+						
+						String wrapperPathModel = pFolder.getLocation().toString() + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "WrappedStatemachine.c";
+						PrintWriter wrapperPrintModel = new PrintWriter(wrapperPathModel, "UTF-8");
+						wrapperPrintModel.println(exampleTransformer.getWrapper());
+						wrapperPrintModel.close();
+						
+						logger.log(Level.INFO, "The xSTS transformation has been finished.");
 						//Trace trace = exampleTransformer.execute();
 						//saveModel(trace.getTargetPackage(), parentFolder.getLocation().toString(),
 						//		trace.getTargetPackage().getName() + "Copy.gcd");
@@ -175,6 +271,15 @@ public class CommandHandler extends AbstractHandler {
 				e.printStackTrace();
 		}
 		return null;
+	}
+	
+	
+	//public void run(StatechartDefinition gammaStatechart, String parentFolder, String targetFolderUri, String basePackageName, IFile firstElement, Resource resoure) {
+		
+	//}
+	
+	enum ActionPrimingSetting {
+		VARIABLE_COMMONIZER, CHOICE_INLINER
 	}
 	
 	/**
