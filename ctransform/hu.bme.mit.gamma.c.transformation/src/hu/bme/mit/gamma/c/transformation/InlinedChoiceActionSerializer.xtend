@@ -23,15 +23,22 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 	extension ExpressionSerializer expressionSerializer = new ExpressionSerializer;
 	protected int decisionMethodCount = 0
 	protected Map<Integer, CharSequence> decisionMethodMap = newHashMap
-	protected final String DECISION_METHOD_NAME = "d"
+	protected final String DECISION_METHOD_NAME
 	
 	protected int conditionMethodCount = 0
 	protected Map<Integer, CharSequence> conditionMethodMap = newHashMap
-	protected final String CONDITION_METHOD_NAME = "c"
+	protected final String CONDITION_METHOD_NAME
 	
 	protected int actionMethodCount = 0
 	protected Map<Integer, CharSequence> actionMethodMap = newHashMap
-	protected final String ACTION_METHOD_NAME = "a"
+	protected final String ACTION_METHOD_NAME
+	
+	new(String STRUCT_NAME) {
+		super(STRUCT_NAME)
+		DECISION_METHOD_NAME = "d"+STRUCT_NAME+"_"
+		CONDITION_METHOD_NAME = "c"+STRUCT_NAME+"_"
+		ACTION_METHOD_NAME = "a"+STRUCT_NAME+"_"
+	}
 	
 	override serializeInitializingAction(XSTS xSts) {
 		return '''
@@ -40,15 +47,17 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 		'''
 	}
 	
-	override CharSequence serializeChangeState(XSTS xSts, String STRUCT_NAME) {
+	
+	
+	override CharSequence serializeChangeState(XSTS xSts) {
 		val variableDeclarations = xSts.variableDeclarations.map[it.originalVariable].filter(VariableDeclaration).toSet
 		return '''
 			// Declaring temporary variables to avoid code duplication
 			«FOR variableDeclaration : variableDeclarations»
-				private «variableDeclaration.type.serialize» «variableDeclaration.temporaryName» = «variableDeclaration.initialValue.serialize»;
+				«variableDeclaration.type.serialize» «variableDeclaration.temporaryName» = «variableDeclaration.initialValue.serialize»;
 			«ENDFOR»
 			
-			private void changeState() {
+			void changeState«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
 				// Initializing the temporary variables
 				«variableDeclarations.serializeInitializationAssignments»
 				«xSts.mergedAction.serialize»
@@ -101,7 +110,7 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 	
 	private def CharSequence serializeChangeStateAuxiliaryMethods() '''
 		«FOR i : 0 ..< decisionMethodCount SEPARATOR System.lineSeparator»
-			private void «DECISION_METHOD_NAME»«i»() {
+			void «DECISION_METHOD_NAME»«i»(«STRUCT_NAME»* statechart) {
 				«decisionMethodMap.get(i)»
 			}
 		«ENDFOR»
@@ -109,7 +118,7 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 	
 	private def CharSequence serializeConditionAuxiliaryMethods() '''
 		«FOR i : 0 ..< conditionMethodCount SEPARATOR System.lineSeparator»
-			private boolean «CONDITION_METHOD_NAME»«i»() {
+			bool «CONDITION_METHOD_NAME»«i»(«STRUCT_NAME»* statechart) {
 				return «conditionMethodMap.get(i)»;
 			}
 		«ENDFOR»
@@ -117,7 +126,7 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 	
 	private def CharSequence serializeActionAuxiliaryMethods() '''
 		«FOR i : 0 ..< actionMethodCount SEPARATOR System.lineSeparator»
-			private void «ACTION_METHOD_NAME»«i»() {
+			void «ACTION_METHOD_NAME»«i»(«STRUCT_NAME»* statechart) {
 				«actionMethodMap.get(i)»
 			}
 		«ENDFOR»
@@ -145,19 +154,19 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 			stringBuilder.append('''(«xStsSubaction.getCondition.serializeExpression») «xStsSubaction.serializeAction»''')
 		}
 		decisionMethodMap.put(decisionMethodCount++, stringBuilder.toString)
-		'''«DECISION_METHOD_NAME»«INITIAL_CHANGE_STATE_METHOD_VALUE»();'''
+		'''«DECISION_METHOD_NAME»«INITIAL_CHANGE_STATE_METHOD_VALUE»(«STRUCT_NAME»* statechart);'''
 	}
 	
 	/** Needed because of too long methods */
 	private def serializeExpression(Expression xStsExpression) {
 		conditionMethodMap.put(conditionMethodCount, xStsExpression.serialize)
-		return CONDITION_METHOD_NAME + conditionMethodCount++ + "()"
+		return CONDITION_METHOD_NAME + conditionMethodCount++ + "(statechart)"
 	}
 	
 	/** Needed because of too long methods */
 	private def serializeAction(Action xStsSubaction) {
 		actionMethodMap.put(actionMethodCount, xStsSubaction.serialize)
-		return ACTION_METHOD_NAME + actionMethodCount++ + "();"
+		return ACTION_METHOD_NAME + actionMethodCount++ + "(statechart);"
 	}
 	
 	private def CharSequence serializeTemporaryAssignment(AssignmentAction action) {
@@ -173,13 +182,13 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 	
 	private def CharSequence serializeInitializationAssignments(Set<? extends Declaration> variableDeclarations) '''
 		«FOR variableDeclaration : variableDeclarations»
-			«variableDeclaration.temporaryName» = «variableDeclaration.name»;
+			«variableDeclaration.temporaryName» = statechart->«variableDeclaration.name»;
 		«ENDFOR»
 	'''
 	
 	private def CharSequence serializeFinalizationAssignments(Set<? extends Declaration> variableDeclarations) '''
 		«FOR variableDeclaration : variableDeclarations»
-			«variableDeclaration.name» = «variableDeclaration.temporaryName»;
+			statechart->«variableDeclaration.name» = «variableDeclaration.temporaryName»;
 		«ENDFOR»
 	'''
 	

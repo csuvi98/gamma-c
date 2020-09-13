@@ -179,10 +179,10 @@ public class CommandHandler extends AbstractHandler {
 						// XSTS to Java serializer
 						TempActionSerializer cActionSerializer = null;
 						// Set the following variable to specify the action priming setting
-						ActionPrimingSetting setting = ActionPrimingSetting.VARIABLE_COMMONIZER;
+						ActionPrimingSetting setting = ActionPrimingSetting.CHOICE_INLINER;
 						if (setting == ActionPrimingSetting.VARIABLE_COMMONIZER) {
 							ActionPrimer actionPrimer = new VariableCommonizer(); // Not necessary to use it for code generation
-							cActionSerializer = new hu.bme.mit.gamma.c.transformation.CommonizedVariableActionSerializer(); // Good for the original actions too
+							cActionSerializer = new hu.bme.mit.gamma.c.transformation.CommonizedVariableActionSerializer(null); // Good for the original actions too
 							// If we wanted to commonize the actions of the XSTS, we would have to do it here
 							// ...
 							xSts.setVariableInitializingAction(actionPrimer.transform(xSts.getVariableInitializingAction()));
@@ -194,7 +194,7 @@ public class CommandHandler extends AbstractHandler {
 						}
 						else {
 							ActionPrimer actionPrimer = new ChoiceInliner(true);
-							cActionSerializer = new hu.bme.mit.gamma.c.transformation.InlinedChoiceActionSerializer();
+							cActionSerializer = new hu.bme.mit.gamma.c.transformation.InlinedChoiceActionSerializer(null);
 							xSts.setVariableInitializingAction(actionPrimer.transform(xSts.getVariableInitializingAction()));
 							xSts.setConfigurationInitializingAction(actionPrimer.transform(xSts.getConfigurationInitializingAction()));
 							xSts.setEntryEventAction(actionPrimer.transform(xSts.getEntryEventAction()));
@@ -213,7 +213,7 @@ public class CommandHandler extends AbstractHandler {
 						System.out.println(xStsString);
 						logger.log(Level.INFO, "Starting xSTS Java code generation.");
 						CTransformer exampleTransformer = new CTransformer(resource, xSts);
-						
+						cActionSerializer.setStructName(exampleTransformer.getStructName());
 						
 						
 						

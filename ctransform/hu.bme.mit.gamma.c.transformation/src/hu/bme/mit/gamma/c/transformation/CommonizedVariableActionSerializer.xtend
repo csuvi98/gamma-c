@@ -16,12 +16,16 @@ class CommonizedVariableActionSerializer extends TempActionSerializer {
 	
 	extension ExpressionSerializer expressionSerializer = new ExpressionSerializer
 	
+	new(String STRUCT_NAME) {
+		super(STRUCT_NAME)
+	}
+	
 	
 	override serializeInitializingAction(XSTS xSts) '''
 		«xSts.initializingAction.serialize»
 	'''
 	
-	override CharSequence serializeChangeState(XSTS xSts, String STRUCT_NAME) '''
+	override CharSequence serializeChangeState(XSTS xSts) '''
 		void changeState«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
 					«xSts.mergedAction.serialize»
 		}

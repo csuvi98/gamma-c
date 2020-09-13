@@ -15,7 +15,7 @@ class CTransformer {
 	final extension TypeSerializer typeSerializer = new TypeSerializer
 	final extension InitialValueRetriever initialValueRetriever = new InitialValueRetriever
 	final extension ExpressionSerializer expressionSerializer = new ExpressionSerializer
-	final extension TempActionSerializer actionSerializer = new CommonizedVariableActionSerializer
+	final extension TempActionSerializer actionSerializer;
 	final extension CStatechartWrapperGenerator cStatechartWrapperGenerator;
 	protected Resource resource
 
@@ -41,9 +41,12 @@ class CTransformer {
 		// Create EMF scope and EMF IncQuery engine based on the resource
 		this.xSts = xSts
 		STRUCT_NAME = xSts.name.toFirstUpper + "Statemachine"
-		
+		actionSerializer = new InlinedChoiceActionSerializer(STRUCT_NAME)
 		this.cStatechartWrapperGenerator = new CStatechartWrapperGenerator(this.xSts);
 		// Create VIATRA Batch transformation
+	}
+	def getStructName(){
+		return STRUCT_NAME
 	}
 
 	def execute(String headerName) {
@@ -57,30 +60,16 @@ class CTransformer {
 			«createStatechartWrapper()»
 			«createHeader()»
 			
-			«««void «STRUCT_NAME»InitEventParameters(«STRUCT_NAME»* statechart, «FOR parameter : xSts.retrieveComponentParameters SEPARATOR ', '»«parameter.type.serialize» «parameter.name»«ENDFOR») {
-			«««	«FOR parameter : xSts.retrieveComponentParameters»
-			«««		statechart->«parameter.name» = «parameter.name»;
-			«««	«ENDFOR»
-			«««}
+
+			«xSts.serializeChangeState»
 			
 			void reset«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
 			«««				Reference variables, e.g., enums, have to be set, as null is not a valid value, including regions: they have to be set to __Inactive__ explicitly on every reset
-				«FOR enumVariable : (xSts.retrieveEnumVariables.reject[xSts.retrieveComponentParameters.toList.contains(it)])»
-						statechart->«enumVariable.name» = «enumVariable.initialValue.serialize»;
-				«ENDFOR»
+			«FOR enumVariable : (xSts.retrieveEnumVariables.reject[xSts.retrieveComponentParameters.toList.contains(it)])»
+					statechart->«enumVariable.name» = «enumVariable.initialValue.serialize»;
+			«ENDFOR»
 				
 				
-				«««FOR variableDeclaration : xSts.retrieveNotTimeoutVariables»
-					«««IF variableDeclaration.type instanceof TypeReference»
-					«««int «variableDeclaration.name»;
-					«««ELSE»
-					«««variableDeclaration.type.serialize» «variableDeclaration.name»;
-					«««ENDIF»
-				«««ENDFOR»
-								
-				«««FOR variableDeclaration : xSts.retrieveTimeouts»
-					«««variableDeclaration.type.serialize» «variableDeclaration.name»;
-				«««ENDFOR»
 				
 				«xSts.serializeInitializingAction»
 			}
@@ -98,7 +87,7 @@ class CTransformer {
 «««			«ENDFOR»
 			
 			
-				void clearOutEvents«STRUCT_NAME»(«STRUCT_NAME»* statechart){
+			void clearOutEvents«STRUCT_NAME»(«STRUCT_NAME»* statechart){
 					«FOR event : xSts.retrieveOutEvents»
 						statechart->«event.name» = false;
 					«ENDFOR»
@@ -106,24 +95,24 @@ class CTransformer {
 					«FOR transientOutParameter : xSts.retrieveOutEventParameters.filter[xSts.transientVariables.contains(it)]»
 						statechart->«transientOutParameter.name» = «transientOutParameter.initialValue.serialize»;
 					«ENDFOR»
-				}
+			}
 				
-				void clearInEvents«STRUCT_NAME»(«STRUCT_NAME»* statechart){
-					«FOR event : xSts.retrieveInEvents»
+			void clearInEvents«STRUCT_NAME»(«STRUCT_NAME»* statechart){
+				«FOR event : xSts.retrieveInEvents»
 						statechart->«event.name» = false;
-					«ENDFOR»
+				«ENDFOR»
 					«««				Clearing transient event parameters
-					«FOR transientInParameter : xSts.retrieveOutEventParameters.filter[xSts.transientVariables.contains(it)]»
+				«FOR transientInParameter : xSts.retrieveOutEventParameters.filter[xSts.transientVariables.contains(it)]»
 						statechart->«transientInParameter.name» = «transientInParameter.initialValue.serialize»;
-					«ENDFOR»
-				}
-				«xSts.serializeChangeState(STRUCT_NAME)»
+				«ENDFOR»
+			}
 				
-				void runCycle«STRUCT_NAME»(«STRUCT_NAME»* statechart){
-					clearOutEvents«STRUCT_NAME»(statechart);
-					changeState«STRUCT_NAME»(statechart);
-					clearInEvents«STRUCT_NAME»(statechart);
-				}
+				
+			void runCycle«STRUCT_NAME»(«STRUCT_NAME»* statechart){
+				clearOutEvents«STRUCT_NAME»(statechart);
+				changeState«STRUCT_NAME»(statechart);
+				clearInEvents«STRUCT_NAME»(statechart);
+			}
 				
 			
 		'''
@@ -199,14 +188,9 @@ class CTransformer {
 			void reset«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 			
 			
-«««			«FOR variable : xSts.variableGroups
-«««											.map[it.variables]
-«««											.flatten SEPARATOR System.lineSeparator»
-«««				void set«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart,«variable.type.serialize» «variable.name»);
-«««										
-«««				«variable.type.serialize» get«variable.name.toFirstUpper»«STRUCT_NAME»(«STRUCT_NAME»* statechart);
-
-«««			«ENDFOR»
+			«IF actionSerializer instanceof InlinedChoiceActionSerializer»
+			
+			«ENDIF»
 			
 			
 			void changeState«STRUCT_NAME»(«STRUCT_NAME»* statechart);
