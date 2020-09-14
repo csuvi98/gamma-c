@@ -35,6 +35,10 @@ class CTransformer {
 	protected List<String> publicHeaders = new ArrayList<String>();
 	protected List<String> publicHeaderFileNames = new ArrayList<String>();
 	protected List<String> ioStrings = new ArrayList<String>();
+	
+	protected int decisionMethodCount = 0;
+	protected int choiceMethodCount = 0;
+	protected int actionMethodCount = 0;
 
 	new(Resource resource, XSTS xSts) {
 		this.resource = resource
@@ -60,8 +64,9 @@ class CTransformer {
 			«createStatechartWrapper()»
 			«createHeader()»
 			
-
-			«xSts.serializeChangeState»
+			«IF actionSerializer instanceof InlinedChoiceActionSerializer»
+				«actionSerializer.serializeTemporaryVariables(xSts)»
+			«ENDIF»
 			
 			void reset«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
 			«««				Reference variables, e.g., enums, have to be set, as null is not a valid value, including regions: they have to be set to __Inactive__ explicitly on every reset
@@ -72,7 +77,20 @@ class CTransformer {
 				
 				
 				«xSts.serializeInitializingAction»
-			}
+			}			
+			
+			
+			«xSts.serializeChangeState»
+			
+			«IF actionSerializer instanceof InlinedChoiceActionSerializer»
+				«IF actionSerializer.getChangeStateFinishedIndicator»
+					«setDecisionCount(actionSerializer.getDecisionMethodCount)»
+					«setChoiceCount(actionSerializer.getConditionMethodCount)»
+					«setActionCount(actionSerializer.getActionMethodCount)»
+				«ENDIF»
+			«ENDIF»
+			
+
 			
 «««			«FOR variable : xSts.variableGroups
 «««								.map[it.variables]
@@ -114,8 +132,23 @@ class CTransformer {
 				clearInEvents«STRUCT_NAME»(statechart);
 			}
 				
+			«IF actionSerializer instanceof InlinedChoiceActionSerializer»
+				«IF actionSerializer.getChangeStateFinishedIndicator»
+					«createHeader()»
+				«ENDIF»
+			«ENDIF»
 			
 		'''
+	}
+	
+	def void setDecisionCount(int decision){
+		decisionMethodCount = decision;
+	}
+	def void setChoiceCount(int choice){
+		choiceMethodCount = choice;
+	}
+	def void setActionCount(int action){
+		actionMethodCount = action;
 	}
 	
 	def void createStatechartWrapper(){
@@ -169,12 +202,7 @@ class CTransformer {
 				«ENDFOR»
 							
 				«FOR variableDeclaration : xSts.retrieveNotTimeoutVariables»
-					«assignStringToTempIO(variableDeclaration.type.serialize + variableDeclaration.name)»
-					«IF !(ioStrings.contains(temporaryIOName))»
 					«variableDeclaration.type.serialize» «variableDeclaration.name»;
-					«putStringInIOList(temporaryIOName)»
-					«ELSE»
-					«ENDIF»
 				«ENDFOR»
 							
 				«FOR variableDeclaration : xSts.retrieveTimeouts»
@@ -188,17 +216,28 @@ class CTransformer {
 			void reset«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 			
 			
-			«IF actionSerializer instanceof InlinedChoiceActionSerializer»
-			
-			«ENDIF»
-			
-			
 			void changeState«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 			
 			void clearOutEvents«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 			void clearInEvents«STRUCT_NAME»(«STRUCT_NAME»* statechart);
 			
 			void runCycle«STRUCT_NAME»(«STRUCT_NAME»* statechart);
+			
+			«IF actionSerializer instanceof InlinedChoiceActionSerializer»
+				«IF actionSerializer.getChangeStateFinishedIndicator»
+					«FOR i : 0 ..< actionMethodCount»
+						void «actionSerializer.getActionMethodName»«i»(«STRUCT_NAME»* statechart);
+					«ENDFOR»
+					
+					«FOR i : 0 ..< choiceMethodCount»
+						bool «actionSerializer.getConditionMethodName»«i»(«STRUCT_NAME»* statechart);
+					«ENDFOR»
+					
+					«FOR i : 0 ..< decisionMethodCount»
+						void «actionSerializer.getDecisionMethodName»«i»(«STRUCT_NAME»* statechart);
+					«ENDFOR»
+				«ENDIF»
+			«ENDIF»
 			
 			
 			#endif /* «STRUCT_NAME.toUpperCase»_HEADER */

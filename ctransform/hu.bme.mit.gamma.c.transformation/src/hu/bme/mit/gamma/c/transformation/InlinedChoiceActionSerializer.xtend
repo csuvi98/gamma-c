@@ -33,6 +33,8 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 	protected Map<Integer, CharSequence> actionMethodMap = newHashMap
 	protected final String ACTION_METHOD_NAME
 	
+	protected boolean changeStateFinishedIndicator = false;
+	
 	new(String STRUCT_NAME) {
 		super(STRUCT_NAME)
 		DECISION_METHOD_NAME = "d"+STRUCT_NAME+"_"
@@ -48,14 +50,20 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 	}
 	
 	
-	
-	override CharSequence serializeChangeState(XSTS xSts) {
+	def CharSequence serializeTemporaryVariables(XSTS xSts){
 		val variableDeclarations = xSts.variableDeclarations.map[it.originalVariable].filter(VariableDeclaration).toSet
 		return '''
 			// Declaring temporary variables to avoid code duplication
 			«FOR variableDeclaration : variableDeclarations»
 				«variableDeclaration.type.serialize» «variableDeclaration.temporaryName» = «variableDeclaration.initialValue.serialize»;
-			«ENDFOR»
+			«ENDFOR»		
+		'''
+	}
+	
+	
+	override CharSequence serializeChangeState(XSTS xSts) {
+		val variableDeclarations = xSts.variableDeclarations.map[it.originalVariable].filter(VariableDeclaration).toSet
+		return '''
 			
 			void changeState«STRUCT_NAME»(«STRUCT_NAME»* statechart) {
 				// Initializing the temporary variables
@@ -70,7 +78,17 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 			«serializeConditionAuxiliaryMethods»
 			
 			«serializeActionAuxiliaryMethods»
+			
+			«setChangeStateFinishedIndicator(true)»
 		'''
+	}
+	
+	def void setChangeStateFinishedIndicator(boolean bool){
+		changeStateFinishedIndicator = bool
+	}
+	
+	def getChangeStateFinishedIndicator(){
+		return changeStateFinishedIndicator
 	}
 	
 	def dispatch CharSequence serialize(Action action) {
@@ -154,7 +172,7 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 			stringBuilder.append('''(«xStsSubaction.getCondition.serializeExpression») «xStsSubaction.serializeAction»''')
 		}
 		decisionMethodMap.put(decisionMethodCount++, stringBuilder.toString)
-		'''«DECISION_METHOD_NAME»«INITIAL_CHANGE_STATE_METHOD_VALUE»(«STRUCT_NAME»* statechart);'''
+		'''«DECISION_METHOD_NAME»«INITIAL_CHANGE_STATE_METHOD_VALUE»(statechart);'''
 	}
 	
 	/** Needed because of too long methods */
@@ -211,4 +229,23 @@ class InlinedChoiceActionSerializer extends TempActionSerializer{
 		return firstXStAssumeAction.assumption
 	}
 	
+	def getActionMethodCount(){
+		return actionMethodCount;
+	}
+	def getConditionMethodCount(){
+		return conditionMethodCount;
+	}
+	def getDecisionMethodCount(){
+		return decisionMethodCount;
+	}
+	
+	def getActionMethodName(){
+		return ACTION_METHOD_NAME;
+	}
+	def getConditionMethodName(){
+		return CONDITION_METHOD_NAME;
+	}
+	def getDecisionMethodName(){
+		return DECISION_METHOD_NAME;
+	}
 }
