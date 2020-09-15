@@ -17,7 +17,7 @@ import static com.google.common.base.Preconditions.checkArgument
 import static extension hu.bme.mit.gamma.xsts.derivedfeatures.XSTSDerivedFeatures.*
 
 
-class InlinedChoiceActionSerializer extends TempActionSerializer{
+class InlinedChoiceActionSerializer extends ActionSerializer{
 	
 	extension TypeSerializer typeSerializer = new TypeSerializer;
 	extension ExpressionSerializer expressionSerializer = new ExpressionSerializer;

@@ -25,16 +25,19 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.google.inject.Injector;
 
+import hu.bme.mit.gamma.c.transformation.ActionSerializer;
 import hu.bme.mit.gamma.c.transformation.CTransformer;
+import hu.bme.mit.gamma.c.transformation.CommonizedVariableActionSerializer;
+import hu.bme.mit.gamma.c.transformation.InlinedChoiceActionSerializer;
 import hu.bme.mit.gamma.expression.model.Expression;
 import hu.bme.mit.gamma.lowlevel.xsts.transformation.actionprimer.ActionPrimer;
 import hu.bme.mit.gamma.lowlevel.xsts.transformation.actionprimer.ChoiceInliner;
+import hu.bme.mit.gamma.lowlevel.xsts.transformation.actionprimer.VariableCommonizer;
 import hu.bme.mit.gamma.statechart.interface_.Package;
 import hu.bme.mit.gamma.statechart.language.ui.internal.LanguageActivator;
 import hu.bme.mit.gamma.statechart.language.ui.serializer.StatechartLanguageSerializer;
 import hu.bme.mit.gamma.xsts.model.XSTS;
 import hu.bme.mit.gamma.xsts.transformation.GammaToXSTSTransformer;
-import hu.bme.mit.gamma.xsts.transformation.serializer.ActionSerializer;
 
 public class CommandHandler extends AbstractHandler {
 	
@@ -64,18 +67,31 @@ public class CommandHandler extends AbstractHandler {
 						
 						File outputFile = new File(filePathModel);
 						XSTS xSts = gammaToXSTSTransformer.preprocessAndExecute(compositeSystem,expressionList,outputFile);
+						ActionSerializer cActionSerializer = null;
+						ActionPrimer actionPrimer;// Good for the original actions too
+						ActionPrimingSetting setting = ActionPrimingSetting.CHOICE_INLINER;
+						if(setting == ActionPrimingSetting.CHOICE_INLINER) {
+							actionPrimer = new ChoiceInliner();
+							cActionSerializer = new InlinedChoiceActionSerializer(null);
+							xSts.setVariableInitializingAction(actionPrimer.transform(xSts.getVariableInitializingAction()));
+		                    xSts.setConfigurationInitializingAction(actionPrimer.transform(xSts.getConfigurationInitializingAction()));
+		                    xSts.setEntryEventAction(actionPrimer.transform(xSts.getEntryEventAction()));
+		                    xSts.setMergedAction(actionPrimer.transform(xSts.getMergedAction()));
+		                    xSts.setInEventAction(actionPrimer.transform(xSts.getInEventAction()));
+		                    xSts.setOutEventAction(actionPrimer.transform(xSts.getOutEventAction()));							
+						}else {
+							actionPrimer = new VariableCommonizer();
+							cActionSerializer = new CommonizedVariableActionSerializer(null);
+							xSts.setVariableInitializingAction(actionPrimer.transform(xSts.getVariableInitializingAction()));
+		                    xSts.setConfigurationInitializingAction(actionPrimer.transform(xSts.getConfigurationInitializingAction()));
+		                    xSts.setEntryEventAction(actionPrimer.transform(xSts.getEntryEventAction()));
+		                    xSts.setMergedAction(actionPrimer.transform(xSts.getMergedAction()));
+		                    xSts.setInEventAction(actionPrimer.transform(xSts.getInEventAction()));
+		                    xSts.setOutEventAction(actionPrimer.transform(xSts.getOutEventAction()));							
+						}
 						
-						ActionPrimer actionPrimer = new ChoiceInliner();// Good for the original actions too
-						//
-						xSts.setVariableInitializingAction(actionPrimer.transform(xSts.getVariableInitializingAction()));
-	                    xSts.setConfigurationInitializingAction(actionPrimer.transform(xSts.getConfigurationInitializingAction()));
-	                    xSts.setEntryEventAction(actionPrimer.transform(xSts.getEntryEventAction()));
-	                    xSts.setMergedAction(actionPrimer.transform(xSts.getMergedAction()));
-	                    xSts.setInEventAction(actionPrimer.transform(xSts.getInEventAction()));
-	                    xSts.setOutEventAction(actionPrimer.transform(xSts.getOutEventAction()));
 						
-						
-						ActionSerializer xStsActionSerializer = ActionSerializer.INSTANCE;
+						hu.bme.mit.gamma.xsts.transformation.serializer.ActionSerializer xStsActionSerializer = hu.bme.mit.gamma.xsts.transformation.serializer.ActionSerializer.INSTANCE;
 						CharSequence xStsString = xStsActionSerializer.serializeXSTS(xSts);
 						System.out.println(xStsString);
 						
@@ -90,6 +106,7 @@ public class CommandHandler extends AbstractHandler {
 						
 						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
 						CTransformer cTransformer = new CTransformer(resource, xSts);
+						cActionSerializer.setStructName(cTransformer.getStructName());
 						cTransformer.setWrapperHeaderName(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentWrapperHeader.h");
 						cTransformer.execute(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentHeader.h");
 						
@@ -118,6 +135,12 @@ public class CommandHandler extends AbstractHandler {
 		}
 		return null;
 	}
+	
+	
+	enum ActionPrimingSetting {
+		VARIABLE_COMMONIZER, CHOICE_INLINER
+	}	
+	
 	
 	/**
 	 * Responsible for saving the given element into a resource file.

@@ -15,7 +15,7 @@ class CTransformer {
 	final extension TypeSerializer typeSerializer = new TypeSerializer
 	final extension InitialValueRetriever initialValueRetriever = new InitialValueRetriever
 	final extension ExpressionSerializer expressionSerializer = new ExpressionSerializer
-	final extension TempActionSerializer actionSerializer;
+	final extension ActionSerializer actionSerializer;
 	final extension CStatechartWrapperGenerator cStatechartWrapperGenerator;
 	protected Resource resource
 
@@ -35,6 +35,7 @@ class CTransformer {
 	protected List<String> publicHeaders = new ArrayList<String>();
 	protected List<String> publicHeaderFileNames = new ArrayList<String>();
 	protected List<String> ioStrings = new ArrayList<String>();
+	protected List<String> nonTimeoutDeclarations = new ArrayList<String>();
 	
 	protected int decisionMethodCount = 0;
 	protected int choiceMethodCount = 0;
@@ -134,6 +135,7 @@ class CTransformer {
 				
 			«IF actionSerializer instanceof InlinedChoiceActionSerializer»
 				«IF actionSerializer.getChangeStateFinishedIndicator»
+					«nonTimeoutDeclarations.clear()»
 					«createHeader()»
 				«ENDIF»
 			«ENDIF»
@@ -182,6 +184,10 @@ class CTransformer {
 		temporaryIOName = string;
 	}
 	
+	def void addNonTimeout(String string){
+		nonTimeoutDeclarations.add(string)
+	}
+	
 	def void createHeader(){
 		header = '''
 			«FOR typeDeclarations: xSts.publicTypeDeclarations»
@@ -202,7 +208,10 @@ class CTransformer {
 				«ENDFOR»
 							
 				«FOR variableDeclaration : xSts.retrieveNotTimeoutVariables»
-					«variableDeclaration.type.serialize» «variableDeclaration.name»;
+					«IF !(nonTimeoutDeclarations.contains(variableDeclaration.type.serialize+variableDeclaration.name))»
+						«variableDeclaration.type.serialize» «variableDeclaration.name»;
+						«addNonTimeout(variableDeclaration.type.serialize+variableDeclaration.name)»
+					«ENDIF»
 				«ENDFOR»
 							
 				«FOR variableDeclaration : xSts.retrieveTimeouts»

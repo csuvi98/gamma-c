@@ -12,7 +12,7 @@ import hu.bme.mit.gamma.xsts.model.XSTS
 
 import static extension hu.bme.mit.gamma.xsts.derivedfeatures.XSTSDerivedFeatures.*
 
-class CommonizedVariableActionSerializer extends TempActionSerializer {
+class CommonizedVariableActionSerializer extends ActionSerializer {
 	
 	extension ExpressionSerializer expressionSerializer = new ExpressionSerializer
 	
