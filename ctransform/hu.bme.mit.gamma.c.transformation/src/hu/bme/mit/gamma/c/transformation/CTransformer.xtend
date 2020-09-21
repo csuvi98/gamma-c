@@ -22,7 +22,7 @@ class CTransformer {
 	
 	protected XSTS xSts;
 	
-	
+	protected boolean bareMetalIndicator = false;
 	
 	protected String model;
 	protected String header;
@@ -41,14 +41,16 @@ class CTransformer {
 	protected int choiceMethodCount = 0;
 	protected int actionMethodCount = 0;
 
-	new(Resource resource, XSTS xSts) {
+	new(Resource resource, XSTS xSts, boolean bareMetalIndicator) {
 		this.resource = resource
 		// Create EMF scope and EMF IncQuery engine based on the resource
 		this.xSts = xSts
 		STRUCT_NAME = xSts.name.toFirstUpper + "Statemachine"
-		actionSerializer = new InlinedChoiceActionSerializer(STRUCT_NAME)
-		this.cStatechartWrapperGenerator = new CStatechartWrapperGenerator(this.xSts);
+		actionSerializer = new CommonizedVariableActionSerializer(STRUCT_NAME)
+		this.bareMetalIndicator = bareMetalIndicator;
+		this.cStatechartWrapperGenerator = new CStatechartWrapperGenerator(this.xSts, bareMetalIndicator);
 		// Create VIATRA Batch transformation
+
 	}
 	def getStructName(){
 		return STRUCT_NAME

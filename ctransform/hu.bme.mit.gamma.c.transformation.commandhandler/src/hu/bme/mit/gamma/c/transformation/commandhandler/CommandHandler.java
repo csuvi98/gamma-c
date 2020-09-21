@@ -86,7 +86,7 @@ public class CommandHandler extends AbstractHandler {
 						// XSTS to Java serializer
 						ActionSerializer cActionSerializer = null;
 						// Set the following variable to specify the action priming setting
-						ActionPrimingSetting setting = ActionPrimingSetting.CHOICE_INLINER;
+						ActionPrimingSetting setting = ActionPrimingSetting.VARIABLE_COMMONIZER;
 						if (setting == ActionPrimingSetting.VARIABLE_COMMONIZER) {
 							ActionPrimer actionPrimer = new VariableCommonizer(); // Not necessary to use it for code generation
 							cActionSerializer = new hu.bme.mit.gamma.c.transformation.CommonizedVariableActionSerializer(null); // Good for the original actions too
@@ -119,7 +119,7 @@ public class CommandHandler extends AbstractHandler {
 						CharSequence xStsString = actionSerializer.serializeXSTS(xSts);
 						System.out.println(xStsString);
 						logger.log(Level.INFO, "Starting xSTS Java code generation.");
-						CTransformer exampleTransformer = new CTransformer(resource, xSts);
+						CTransformer exampleTransformer = new CTransformer(resource, xSts, true);
 						cActionSerializer.setStructName(exampleTransformer.getStructName());
 						
 						

@@ -105,7 +105,7 @@ public class CommandHandler extends AbstractHandler {
 						//String filepath = parentFolder + File.separator + firstElement.getName().replaceFirst("[.][^.]+$", "")+ "SystemVerilog.sv";
 						
 						PrintWriter printModel = new PrintWriter(filePathModel, "UTF-8");
-						CTransformer cTransformer = new CTransformer(resource, xSts);
+						CTransformer cTransformer = new CTransformer(resource, xSts, true);
 						cActionSerializer.setStructName(cTransformer.getStructName());
 						cTransformer.setWrapperHeaderName(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentWrapperHeader.h");
 						cTransformer.execute(firstElement.getName().replaceFirst("[.][^.]+$", "")+ "ComponentHeader.h");

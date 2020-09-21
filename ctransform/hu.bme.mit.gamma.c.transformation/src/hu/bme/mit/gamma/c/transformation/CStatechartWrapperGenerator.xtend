@@ -5,13 +5,16 @@ import hu.bme.mit.gamma.xsts.model.XSTS
 class CStatechartWrapperGenerator {
 	//final StatechartDefinition gammaStatechart
 	final XSTS xSts
+	protected String STRUCT;
+	protected boolean bareMetalIndicator;
 	
-	new(XSTS xSts/* , StatechartDefinition gammaStatechart*/){
+	new(XSTS xSts, boolean bareMetalIndicator){
 		this.xSts = xSts
-		//this.gammaStatechart = gammaStatechart
+		this.bareMetalIndicator = bareMetalIndicator;
 	}
 	
 	def createWrapperHeader(String STRUCT_NAME, String header){
+		STRUCT = STRUCT_NAME
 		return'''
 			#include <sys/time.h>
 			#ifndef «STRUCT_NAME.toUpperCase»WRAPPER_HEADER
@@ -34,10 +37,16 @@ class CStatechartWrapperGenerator {
 	
 	def createWrapper(String STRUCT_NAME, String header, String wrapperHeader){
 		return  '''
-			#include <sys/time.h>
+
 			#include "«header»"
 			#include "«wrapperHeader»"
-			
+			«IF bareMetalIndicator»
+				#include "time.h"
+				
+				long clk = 0;
+			«ELSE»
+				#include <sys/time.h>
+			«ENDIF»			
 			
 			void set«STRUCT_NAME»Statechart(«STRUCT_NAME»Wrapper wrappedStatechart, «STRUCT_NAME»* statechart){
 				wrappedStatechart.«STRUCT_NAME.toFirstLower» = *statechart;
@@ -45,14 +54,7 @@ class CStatechartWrapperGenerator {
 			
 			
 			void executeStep«STRUCT_NAME»(«STRUCT_NAME»Wrapper* wrappedStatechart){
-				gettimeofday(&(wrappedStatechart->elapsedTimeval), NULL);
-				long elapsedTime = (((wrappedStatechart->elapsedTimeval.tv_sec - wrappedStatechart->startTimeval.tv_sec) * 1000000 + wrappedStatechart->elapsedTimeval.tv_usec - wrappedStatechart->startTimeval.tv_usec)/1000);
-				«FOR timeout : xSts.clockVariables»
-					wrappedStatechart->«STRUCT_NAME.toFirstLower».«timeout.name» = wrappedStatechart->«STRUCT_NAME.toFirstLower».«timeout.name» + elapsedTime;
-«««					set«timeout.name.toFirstUpper»«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»), get«timeout.name.toFirstUpper»«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»)) + elapsedTime);
-				«ENDFOR»
-				runCycle«STRUCT_NAME»(&(wrappedStatechart->«STRUCT_NAME.toFirstLower»));
-				gettimeofday(&(wrappedStatechart->startTimeval), NULL);
+				«createTiming()»
 			}
 			
 			void wrappedReset«STRUCT_NAME»(«STRUCT_NAME»Wrapper* wrappedStatechart){
@@ -61,6 +63,32 @@ class CStatechartWrapperGenerator {
 			}
 			
 		'''
+	}
+	
+	def createTiming(){
+		if(bareMetalIndicator == false){
+			return'''
+				gettimeofday(&(wrappedStatechart->elapsedTimeval), NULL);
+				long elapsedTime = (((wrappedStatechart->elapsedTimeval.tv_sec - wrappedStatechart->startTimeval.tv_sec) * 1000000 + wrappedStatechart->elapsedTimeval.tv_usec - wrappedStatechart->startTimeval.tv_usec)/1000);
+				«FOR timeout : xSts.clockVariables»
+					wrappedStatechart->«STRUCT.toFirstLower».«timeout.name» = wrappedStatechart->«STRUCT.toFirstLower».«timeout.name» + elapsedTime;
+				«ENDFOR»
+				runCycle«STRUCT»(&(wrappedStatechart->«STRUCT.toFirstLower»));
+				gettimeofday(&(wrappedStatechart->startTimeval), NULL);
+			'''
+		}else{
+			return'''
+				if(clk == CLOCKS_PER_SEC*1000 - 1){
+				«FOR timeout : xSts.clockVariables»
+					wrappedStatechart->«STRUCT.toFirstLower».«timeout.name» = wrappedStatechart->«STRUCT.toFirstLower».«timeout.name» + 1;
+					clk = 0;
+				«ENDFOR»
+				}else{
+					clk++;
+				}
+				runCycle«STRUCT»(&(wrappedStatechart->«STRUCT.toFirstLower»));
+			'''
+		}
 	}
 
 }
